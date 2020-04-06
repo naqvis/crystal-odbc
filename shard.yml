@@ -1,0 +1,16 @@
+name: odbc
+version: 0.1.0
+description: |
+ ODBC connector for Crystal
+
+authors:
+  - Ali Naqvi <syed.alinaqvi@gmail.com>
+
+crystal: 0.33.0
+
+dependencies:
+  db:
+    github: crystal-lang/crystal-db
+    version: ~> 0.8.0
+
+license: MIT

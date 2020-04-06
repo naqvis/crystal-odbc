@@ -1,0 +1,1295 @@
+lib LibODBC
+  SQL_WCHAR        =  -8
+  SQL_WVARCHAR     =  -9
+  SQL_WLONGVARCHAR = -10
+  SQL_C_CHAR       = SQL_CHAR
+  SQL_C_WCHAR      = SQL_WCHAR
+  SQL_C_TCHAR      = SQL_C_WCHAR
+
+  SQL_NULL_DATA         =  -1
+  SQL_DATA_AT_EXEC      =  -2
+  SQL_SUCCESS           =   0
+  SQL_SUCCESS_WITH_INFO =   1
+  SQL_NO_DATA           = 100
+
+  SQL_ERROR                =  -1
+  SQL_INVALID_HANDLE       =  -2
+  SQL_STILL_EXECUTING      =   2
+  SQL_NEED_DATA            =  99
+  SQL_PARAM_DATA_AVAILABLE = 101
+
+  # use these to indicate string termination to some function
+  SQL_NTS  = -3
+  SQL_NTSL = -3
+
+  # maximum message length
+  SQL_MAX_MESSAGE_LENGTH = 512
+  # date/time length constants
+  SQL_DATE_LEN      = 10
+  SQL_TIME_LEN      =  8
+  SQL_TIMESTAMP_LEN = 19
+
+  # handle type identifiers
+  SQL_HANDLE_ENV  = 1
+  SQL_HANDLE_DBC  = 2
+  SQL_HANDLE_STMT = 3
+  SQL_HANDLE_DESC = 4
+
+  # environment attribute
+  SQL_ATTR_OUTPUT_NTS         = 10001
+  SQL_ATTR_AUTO_IPD           = 10001
+  SQL_ATTR_METADATA_ID        = 10014
+  SQL_ATTR_APP_ROW_DESC       = 10010
+  SQL_ATTR_APP_PARAM_DESC     = 10011
+  SQL_ATTR_IMP_ROW_DESC       = 10012
+  SQL_ATTR_IMP_PARAM_DESC     = 10013
+  SQL_ATTR_CURSOR_SCROLLABLE  =    -1
+  SQL_ATTR_CURSOR_SENSITIVITY =    -2
+
+  # SQL_ATTR_CURSOR_SCROLLABLE values
+  SQL_NONSCROLLABLE = 0
+  SQL_SCROLLABLE    = 1
+
+  # identifiers of fields in the SQL descriptor
+  SQL_DESC_COUNT                  = 1001
+  SQL_DESC_TYPE                   = 1002
+  SQL_DESC_LENGTH                 = 1003
+  SQL_DESC_OCTET_LENGTH_PTR       = 1004
+  SQL_DESC_PRECISION              = 1005
+  SQL_DESC_SCALE                  = 1006
+  SQL_DESC_DATETIME_INTERVAL_CODE = 1007
+  SQL_DESC_NULLABLE               = 1008
+  SQL_DESC_INDICATOR_PTR          = 1009
+  SQL_DESC_DATA_PTR               = 1010
+  SQL_DESC_NAME                   = 1011
+  SQL_DESC_UNNAMED                = 1012
+  SQL_DESC_OCTET_LENGTH           = 1013
+  SQL_DESC_ALLOC_TYPE             = 1099
+
+  # identifiers of fields in the diagnostics area
+  SQL_DIAG_RETURNCODE            =  1
+  SQL_DIAG_NUMBER                =  2
+  SQL_DIAG_ROW_COUNT             =  3
+  SQL_DIAG_SQLSTATE              =  4
+  SQL_DIAG_NATIVE                =  5
+  SQL_DIAG_MESSAGE_TEXT          =  6
+  SQL_DIAG_DYNAMIC_FUNCTION      =  7
+  SQL_DIAG_CLASS_ORIGIN          =  8
+  SQL_DIAG_SUBCLASS_ORIGIN       =  9
+  SQL_DIAG_CONNECTION_NAME       = 10
+  SQL_DIAG_SERVER_NAME           = 11
+  SQL_DIAG_DYNAMIC_FUNCTION_CODE = 12
+
+  # dynamic function codes
+  SQL_DIAG_ALTER_DOMAIN          =  3
+  SQL_DIAG_ALTER_TABLE           =  4
+  SQL_DIAG_CALL                  =  7
+  SQL_DIAG_CREATE_ASSERTION      =  6
+  SQL_DIAG_CREATE_CHARACTER_SET  =  8
+  SQL_DIAG_CREATE_COLLATION      = 10
+  SQL_DIAG_CREATE_DOMAIN         = 23
+  SQL_DIAG_CREATE_INDEX          = -1
+  SQL_DIAG_CREATE_SCHEMA         = 64
+  SQL_DIAG_CREATE_TABLE          = 77
+  SQL_DIAG_CREATE_TRANSLATION    = 79
+  SQL_DIAG_CREATE_VIEW           = 84
+  SQL_DIAG_DELETE_WHERE          = 19
+  SQL_DIAG_DROP_ASSERTION        = 24
+  SQL_DIAG_DROP_CHARACTER_SET    = 25
+  SQL_DIAG_DROP_COLLATION        = 26
+  SQL_DIAG_DROP_DOMAIN           = 27
+  SQL_DIAG_DROP_INDEX            = -2
+  SQL_DIAG_DROP_SCHEMA           = 31
+  SQL_DIAG_DROP_TABLE            = 32
+  SQL_DIAG_DROP_TRANSLATION      = 33
+  SQL_DIAG_DROP_VIEW             = 36
+  SQL_DIAG_DYNAMIC_DELETE_CURSOR = 38
+  SQL_DIAG_DYNAMIC_UPDATE_CURSOR = 81
+  SQL_DIAG_GRANT                 = 48
+  SQL_DIAG_INSERT                = 50
+  SQL_DIAG_REVOKE                = 59
+  SQL_DIAG_SELECT_CURSOR         = 85
+  SQL_DIAG_UNKNOWN_STATEMENT     =  0
+  SQL_DIAG_UPDATE_WHERE          = 82
+
+  # SQL data type codes
+  SQL_UNKNOWN_TYPE =  0
+  SQL_CHAR         =  1
+  SQL_NUMERIC      =  2
+  SQL_DECIMAL      =  3
+  SQL_INTEGER      =  4
+  SQL_SMALLINT     =  5
+  SQL_FLOAT        =  6
+  SQL_REAL         =  7
+  SQL_DOUBLE       =  8
+  SQL_DATETIME     =  9
+  SQL_VARCHAR      = 12
+
+  # One-parameter shortcuts for date/time data types
+  SQL_TYPE_DATE      = 91
+  SQL_TYPE_TIME      = 92
+  SQL_TYPE_TIMESTAMP = 93
+
+  # Statement attribute values for cursor sensitivity
+  SQL_UNSPECIFIED = 0
+  SQL_INSENSITIVE = 1
+  SQL_SENSITIVE   = 2
+
+  # GetTypeInfo() request for all data types
+  SQL_ALL_TYPES = 0
+
+  # Default conversion code for SQLBindCol(), SQLBindParam() and SQLGetData()
+  SQL_DEFAULT = 99
+
+  # SQLGetData() code indicating that the application row descriptor
+  # specifies the data type
+  SQL_ARD_TYPE = -99
+
+  # SQL date/time type subcodes
+  SQL_CODE_DATE      = 1
+  SQL_CODE_TIME      = 2
+  SQL_CODE_TIMESTAMP = 3
+
+  # CLI option values
+  SQL_FALSE = 0
+  SQL_TRUE  = 1
+
+  # values of NULLABLE field in descriptor
+  SQL_NO_NULLS = 0
+  SQL_NULLABLE = 1
+
+  # Value returned by SQLGetTypeInfo() to denote that it is
+  # not known whether or not a data type supports null values.
+  SQL_NULLABLE_UNKNOWN = 2
+
+  # Values returned by SQLGetTypeInfo() to show WHERE clause
+  # supported
+  SQL_PRED_NONE  = 0
+  SQL_PRED_CHAR  = 1
+  SQL_PRED_BASIC = 2
+
+  # values of UNNAMED field in descriptor
+  SQL_NAMED   = 0
+  SQL_UNNAMED = 1
+
+  # values of ALLOC_TYPE field in descriptor
+  SQL_DESC_ALLOC_AUTO = 1
+  SQL_DESC_ALLOC_USER = 2
+
+  # FreeStmt() options
+  SQL_CLOSE        = 0
+  SQL_DROP         = 1
+  SQL_UNBIND       = 2
+  SQL_RESET_PARAMS = 3
+
+  # Codes used for FetchOrientation in SQLFetchScroll(),
+  # and in SQLDataSources()
+  SQL_FETCH_NEXT     = 1
+  SQL_FETCH_FIRST    = 2
+  SQL_FETCH_LAST     = 3
+  SQL_FETCH_PRIOR    = 4
+  SQL_FETCH_ABSOLUTE = 5
+  SQL_FETCH_RELATIVE = 6
+
+  # SQLEndTran() options
+  SQL_COMMIT   = 0
+  SQL_ROLLBACK = 1
+
+  # null handles returned by SQLAllocHandle()
+  SQL_NULL_HENV  = 0
+  SQL_NULL_HDBC  = 0
+  SQL_NULL_HSTMT = 0
+  SQL_NULL_HDESC = 0
+  SQL_NULL_DESC  = 0
+
+  # null handle used in place of parent handle when allocating HENV
+  SQL_NULL_HANDLE = 0
+
+  # Values that may appear in the result set of SQLSpecialColumns()
+  SQL_SCOPE_CURROW      = 0
+  SQL_SCOPE_TRANSACTION = 1
+  SQL_SCOPE_SESSION     = 2
+  SQL_PC_UNKNOWN        = 0
+  SQL_PC_NON_PSEUDO     = 1
+  SQL_PC_PSEUDO         = 2
+
+  # Reserved value for the IdentifierType argument of SQLSpecialColumns()
+  SQL_ROW_IDENTIFIER = 1
+
+  # Reserved values for UNIQUE argument of SQLStatistics()
+  SQL_INDEX_UNIQUE    = 0
+  SQL_INDEX_ALL       = 1
+  SQL_INDEX_CLUSTERED = 1
+  SQL_INDEX_HASHED    = 2
+  SQL_INDEX_OTHER     = 3
+
+  # SQLGetFunctions() values to identify ODBC APIs
+  SQL_API_SQLALLOCCONNECT     =    1
+  SQL_API_SQLALLOCENV         =    2
+  SQL_API_SQLALLOCHANDLE      = 1001
+  SQL_API_SQLALLOCSTMT        =    3
+  SQL_API_SQLBINDCOL          =    4
+  SQL_API_SQLBINDPARAM        = 1002
+  SQL_API_SQLCANCEL           =    5
+  SQL_API_SQLCLOSECURSOR      = 1003
+  SQL_API_SQLCOLATTRIBUTE     =    6
+  SQL_API_SQLCOLUMNS          =   40
+  SQL_API_SQLCONNECT          =    7
+  SQL_API_SQLCOPYDESC         = 1004
+  SQL_API_SQLDATASOURCES      =   57
+  SQL_API_SQLDESCRIBECOL      =    8
+  SQL_API_SQLDISCONNECT       =    9
+  SQL_API_SQLENDTRAN          = 1005
+  SQL_API_SQLERROR            =   10
+  SQL_API_SQLEXECDIRECT       =   11
+  SQL_API_SQLEXECUTE          =   12
+  SQL_API_SQLFETCH            =   13
+  SQL_API_SQLFETCHSCROLL      = 1021
+  SQL_API_SQLFREECONNECT      =   14
+  SQL_API_SQLFREEENV          =   15
+  SQL_API_SQLFREEHANDLE       = 1006
+  SQL_API_SQLFREESTMT         =   16
+  SQL_API_SQLGETCONNECTATTR   = 1007
+  SQL_API_SQLGETCONNECTOPTION =   42
+  SQL_API_SQLGETCURSORNAME    =   17
+  SQL_API_SQLGETDATA          =   43
+  SQL_API_SQLGETDESCFIELD     = 1008
+  SQL_API_SQLGETDESCREC       = 1009
+  SQL_API_SQLGETDIAGFIELD     = 1010
+  SQL_API_SQLGETDIAGREC       = 1011
+  SQL_API_SQLGETENVATTR       = 1012
+  SQL_API_SQLGETFUNCTIONS     =   44
+  SQL_API_SQLGETINFO          =   45
+  SQL_API_SQLGETSTMTATTR      = 1014
+  SQL_API_SQLGETSTMTOPTION    =   46
+  SQL_API_SQLGETTYPEINFO      =   47
+  SQL_API_SQLNUMRESULTCOLS    =   18
+  SQL_API_SQLPARAMDATA        =   48
+  SQL_API_SQLPREPARE          =   19
+  SQL_API_SQLPUTDATA          =   49
+  SQL_API_SQLROWCOUNT         =   20
+  SQL_API_SQLSETCONNECTATTR   = 1016
+  SQL_API_SQLSETCONNECTOPTION =   50
+  SQL_API_SQLSETCURSORNAME    =   21
+  SQL_API_SQLSETDESCFIELD     = 1017
+  SQL_API_SQLSETDESCREC       = 1018
+  SQL_API_SQLSETENVATTR       = 1019
+  SQL_API_SQLSETPARAM         =   22
+  SQL_API_SQLSETSTMTATTR      = 1020
+  SQL_API_SQLSETSTMTOPTION    =   51
+  SQL_API_SQLSPECIALCOLUMNS   =   52
+  SQL_API_SQLSTATISTICS       =   53
+  SQL_API_SQLTABLES           =   54
+  SQL_API_SQLTRANSACT         =   23
+  SQL_API_SQLCANCELHANDLE     = 1022
+
+  # Information requested by SQLGetInfo()
+  SQL_MAX_DRIVER_CONNECTIONS        = 0
+  SQL_MAXIMUM_DRIVER_CONNECTIONS    = SQL_MAX_DRIVER_CONNECTIONS
+  SQL_MAX_CONCURRENT_ACTIVITIES     = 1
+  SQL_MAXIMUM_CONCURRENT_ACTIVITIES = SQL_MAX_CONCURRENT_ACTIVITIES
+  SQL_DATA_SOURCE_NAME              =  2
+  SQL_FETCH_DIRECTION               =  8
+  SQL_SERVER_NAME                   = 13
+  SQL_SEARCH_PATTERN_ESCAPE         = 14
+  SQL_DBMS_NAME                     = 17
+  SQL_DBMS_VER                      = 18
+  SQL_ACCESSIBLE_TABLES             = 19
+  SQL_ACCESSIBLE_PROCEDURES         = 20
+  SQL_CURSOR_COMMIT_BEHAVIOR        = 23
+  SQL_DATA_SOURCE_READ_ONLY         = 25
+  SQL_DEFAULT_TXN_ISOLATION         = 26
+  SQL_IDENTIFIER_CASE               = 28
+  SQL_IDENTIFIER_QUOTE_CHAR         = 29
+  SQL_MAX_COLUMN_NAME_LEN           = 30
+  SQL_MAXIMUM_COLUMN_NAME_LENGTH    = SQL_MAX_COLUMN_NAME_LEN
+  SQL_MAX_CURSOR_NAME_LEN           = 31
+  SQL_MAXIMUM_CURSOR_NAME_LENGTH    = SQL_MAX_CURSOR_NAME_LEN
+  SQL_MAX_SCHEMA_NAME_LEN           = 32
+  SQL_MAXIMUM_SCHEMA_NAME_LENGTH    = SQL_MAX_SCHEMA_NAME_LEN
+  SQL_MAX_CATALOG_NAME_LEN          = 34
+  SQL_MAXIMUM_CATALOG_NAME_LENGTH   = SQL_MAX_CATALOG_NAME_LEN
+  SQL_MAX_TABLE_NAME_LEN            = 35
+  SQL_SCROLL_CONCURRENCY            = 43
+  SQL_TXN_CAPABLE                   = 46
+  SQL_TRANSACTION_CAPABLE           = SQL_TXN_CAPABLE
+  SQL_USER_NAME                     = 47
+  SQL_TXN_ISOLATION_OPTION          = 72
+  SQL_TRANSACTION_ISOLATION_OPTION  = SQL_TXN_ISOLATION_OPTION
+  SQL_INTEGRITY                     = 73
+  SQL_GETDATA_EXTENSIONS            = 81
+  SQL_NULL_COLLATION                = 85
+  SQL_ALTER_TABLE                   = 86
+  SQL_ORDER_BY_COLUMNS_IN_SELECT    = 90
+  SQL_SPECIAL_CHARACTERS            = 94
+  SQL_MAX_COLUMNS_IN_GROUP_BY       = 97
+  SQL_MAXIMUM_COLUMNS_IN_GROUP_BY   = SQL_MAX_COLUMNS_IN_GROUP_BY
+  SQL_MAX_COLUMNS_IN_INDEX          = 98
+  SQL_MAXIMUM_COLUMNS_IN_INDEX      = SQL_MAX_COLUMNS_IN_INDEX
+  SQL_MAX_COLUMNS_IN_ORDER_BY       = 99
+  SQL_MAXIMUM_COLUMNS_IN_ORDER_BY   = SQL_MAX_COLUMNS_IN_ORDER_BY
+  SQL_MAX_COLUMNS_IN_SELECT         = 100
+  SQL_MAXIMUM_COLUMNS_IN_SELECT     = SQL_MAX_COLUMNS_IN_SELECT
+  SQL_MAX_COLUMNS_IN_TABLE          = 101
+  SQL_MAX_INDEX_SIZE                = 102
+  SQL_MAXIMUM_INDEX_SIZE            = SQL_MAX_INDEX_SIZE
+  SQL_MAX_ROW_SIZE                  = 104
+  SQL_MAXIMUM_ROW_SIZE              = SQL_MAX_ROW_SIZE
+  SQL_MAX_STATEMENT_LEN             = 105
+  SQL_MAXIMUM_STATEMENT_LENGTH      = SQL_MAX_STATEMENT_LEN
+  SQL_MAX_TABLES_IN_SELECT          = 106
+  SQL_MAXIMUM_TABLES_IN_SELECT      = SQL_MAX_TABLES_IN_SELECT
+  SQL_MAX_USER_NAME_LEN             = 107
+  SQL_MAXIMUM_USER_NAME_LENGTH      = SQL_MAX_USER_NAME_LEN
+  SQL_OJ_CAPABILITIES               = 115
+  SQL_OUTER_JOIN_CAPABILITIES       = SQL_OJ_CAPABILITIES
+  SQL_XOPEN_CLI_YEAR                = 10000
+  SQL_CURSOR_SENSITIVITY            = 10001
+  SQL_DESCRIBE_PARAMETER            = 10002
+  SQL_CATALOG_NAME                  = 10003
+  SQL_COLLATION_SEQ                 = 10004
+  SQL_MAX_IDENTIFIER_LEN            = 10005
+  SQL_MAXIMUM_IDENTIFIER_LENGTH     = SQL_MAX_IDENTIFIER_LEN
+
+  # SQL_ALTER_TABLE bitmasks
+  SQL_AT_ADD_COLUMN     = 0x00000001_i64
+  SQL_AT_DROP_COLUMN    = 0x00000002_i64
+  SQL_AT_ADD_CONSTRAINT = 0x00000008_i64
+
+  # SQL_ASYNC_MODE values
+  SQL_AM_NONE       = 0
+  SQL_AM_CONNECTION = 1
+  SQL_AM_STATEMENT  = 2
+
+  # SQL_CURSOR_COMMIT_BEHAVIOR values
+  SQL_CB_DELETE   = 0
+  SQL_CB_CLOSE    = 1
+  SQL_CB_PRESERVE = 2
+
+  # SQL_FETCH_DIRECTION bitmasks
+  SQL_FD_FETCH_NEXT     = 0x00000001_i64
+  SQL_FD_FETCH_FIRST    = 0x00000002_i64
+  SQL_FD_FETCH_LAST     = 0x00000004_i64
+  SQL_FD_FETCH_PRIOR    = 0x00000008_i64
+  SQL_FD_FETCH_ABSOLUTE = 0x00000010_i64
+  SQL_FD_FETCH_RELATIVE = 0x00000020_i64
+
+  # SQL_GETDATA_EXTENSIONS bitmasks
+  SQL_GD_ANY_COLUMN = 0x00000001_i64
+  SQL_GD_ANY_ORDER  = 0x00000002_i64
+
+  # SQL_IDENTIFIER_CASE values
+  SQL_IC_UPPER     = 1
+  SQL_IC_LOWER     = 2
+  SQL_IC_SENSITIVE = 3
+  SQL_IC_MIXED     = 4
+
+  # SQL_OJ_CAPABILITIES bitmasks
+  # NB: this means 'outer join', not what  you may be thinking
+  SQL_OJ_LEFT               = 0x00000001_i64
+  SQL_OJ_RIGHT              = 0x00000002_i64
+  SQL_OJ_FULL               = 0x00000004_i64
+  SQL_OJ_NESTED             = 0x00000008_i64
+  SQL_OJ_NOT_ORDERED        = 0x00000010_i64
+  SQL_OJ_INNER              = 0x00000020_i64
+  SQL_OJ_ALL_COMPARISON_OPS = 0x00000040_i64
+
+  # SQL_SCROLL_CONCURRENCY bitmasks
+  SQL_SCCO_READ_ONLY  = 0x00000001_i64
+  SQL_SCCO_LOCK       = 0x00000002_i64
+  SQL_SCCO_OPT_ROWVER = 0x00000004_i64
+  SQL_SCCO_OPT_VALUES = 0x00000008_i64
+
+  # SQL_TXN_CAPABLE values
+  SQL_TC_NONE       = 0
+  SQL_TC_DML        = 1
+  SQL_TC_ALL        = 2
+  SQL_TC_DDL_COMMIT = 3
+  SQL_TC_DDL_IGNORE = 4
+
+  # SQL_TXN_ISOLATION_OPTION bitmasks
+  SQL_TXN_READ_UNCOMMITTED         = 0x00000001_i64
+  SQL_TRANSACTION_READ_UNCOMMITTED = SQL_TXN_READ_UNCOMMITTED
+  SQL_TXN_READ_COMMITTED           = 0x00000002_i64
+  SQL_TRANSACTION_READ_COMMITTED   = SQL_TXN_READ_COMMITTED
+  SQL_TXN_REPEATABLE_READ          = 0x00000004_i64
+  SQL_TRANSACTION_REPEATABLE_READ  = SQL_TXN_REPEATABLE_READ
+  SQL_TXN_SERIALIZABLE             = 0x00000008_i64
+  SQL_TRANSACTION_SERIALIZABLE     = SQL_TXN_SERIALIZABLE
+
+  # SQL_NULL_COLLATION values
+  SQL_NC_HIGH = 0
+  SQL_NC_LOW  = 1
+
+  # generally useful constants
+  SQL_SPEC_MAJOR               =  3      #  Major version of specification
+  SQL_SPEC_MINOR               = 52      # Minor version of specification
+  SQL_SPEC_STRING              = "03.52" # String constant for version
+  SQL_SQLSTATE_SIZE            =   5
+  SQL_MAX_DSN_LENGTH           =  32
+  SQL_MAX_OPTION_STRING_LENGTH = 256
+
+  # return code SQL_NO_DATA_FOUND is the same as SQL_NO_DATA
+  SQL_NO_DATA_FOUND = SQL_NO_DATA
+
+  # an end handle type
+  SQL_HANDLE_SENV = 5
+
+  # env attribute
+  SQL_ATTR_ODBC_VERSION       = 200
+  SQL_ATTR_CONNECTION_POOLING = 201
+  SQL_ATTR_CP_MATCH           = 202
+
+  # values for SQL_ATTR_CONNECTION_POOLING
+  SQL_CP_OFF            = 0_u64
+  SQL_CP_ONE_PER_DRIVER = 1_u64
+  SQL_CP_ONE_PER_HENV   = 2_u64
+  SQL_CP_DEFAULT        = SQL_CP_OFF
+
+  # values for SQL_ATTR_CP_MATCH
+  SQL_CP_STRICT_MATCH  = 0_u64
+  SQL_CP_RELAXED_MATCH = 1_u64
+  SQL_CP_MATCH_DEFAULT = SQL_CP_STRICT_MATCH
+
+  # values for SQL_ATTR_ODBC_VERSION
+  SQL_OV_ODBC2 = 2_u64
+  SQL_OV_ODBC3 = 3_u64
+
+  # new values for SQL_ATTR_ODBC_VERSION
+  # From ODBC 3.8 onwards, we should use <major version> * 100 + <minor version>
+  SQL_OV_ODBC3_80 = 380_u64
+
+  # connection attributes
+  SQL_ACCESS_MODE       = 101
+  SQL_AUTOCOMMIT        = 102
+  SQL_LOGIN_TIMEOUT     = 103
+  SQL_OPT_TRACE         = 104
+  SQL_OPT_TRACEFILE     = 105
+  SQL_TRANSLATE_DLL     = 106
+  SQL_TRANSLATE_OPTION  = 107
+  SQL_TXN_ISOLATION     = 108
+  SQL_CURRENT_QUALIFIER = 109
+  SQL_ODBC_CURSORS      = 110
+  SQL_QUIET_MODE        = 111
+  SQL_PACKET_SIZE       = 112
+
+  # connection attributes with new names
+  SQL_ATTR_ACCESS_MODE         = SQL_ACCESS_MODE
+  SQL_ATTR_AUTOCOMMIT          = SQL_AUTOCOMMIT
+  SQL_ATTR_CONNECTION_TIMEOUT  = 113
+  SQL_ATTR_CURRENT_CATALOG     = SQL_CURRENT_QUALIFIER
+  SQL_ATTR_DISCONNECT_BEHAVIOR =  114
+  SQL_ATTR_ENLIST_IN_DTC       = 1207
+  SQL_ATTR_ENLIST_IN_XA        = 1208
+  SQL_ATTR_LOGIN_TIMEOUT       = SQL_LOGIN_TIMEOUT
+  SQL_ATTR_ODBC_CURSORS        = SQL_ODBC_CURSORS
+  SQL_ATTR_PACKET_SIZE         = SQL_PACKET_SIZE
+  SQL_ATTR_QUIET_MODE          = SQL_QUIET_MODE
+  SQL_ATTR_TRACE               = SQL_OPT_TRACE
+  SQL_ATTR_TRACEFILE           = SQL_OPT_TRACEFILE
+  SQL_ATTR_TRANSLATE_LIB       = SQL_TRANSLATE_DLL
+  SQL_ATTR_TRANSLATE_OPTION    = SQL_TRANSLATE_OPTION
+  SQL_ATTR_TXN_ISOLATION       = SQL_TXN_ISOLATION
+  SQL_ATTR_CONNECTION_DEAD     = 1209 # GetConnectAttr only
+  SQL_ATTR_DRIVER_THREADING    = 1028 # Driver threading level
+
+  #	ODBC Driver Manager sets this connection attribute to a unicode driver
+  #	(which supports SQLConnectW) when the application is an ANSI application
+  #	(which calls SQLConnect, SQLDriverConnect, or SQLBrowseConnect).
+  #	This is SetConnectAttr only and application does not set this attribute
+  #	This attribute was introduced because some unicode driver's some APIs may
+  #	need to behave differently on ANSI or Unicode applications. A unicode
+  #	driver, which  has same behavior for both ANSI or Unicode applications,
+  #	should return SQL_ERROR when the driver manager sets this connection
+  #	attribute. When a unicode driver returns SQL_SUCCESS on this attribute,
+  #	the driver manager treates ANSI and Unicode connections differently in
+  #	connection pooling.
+  SQL_ATTR_ANSI_APP = 115
+
+  SQL_ATTR_RESET_CONNECTION           = 116
+  SQL_ATTR_ASYNC_DBC_FUNCTIONS_ENABLE = 117
+
+  SQL_CONN_OPT_MAX = SQL_PACKET_SIZE
+  SQL_CONN_OPT_MIN = SQL_ACCESS_MODE
+
+  # SQL_ACCESS_MODE options
+  SQL_MODE_READ_WRITE = 0_u64
+  SQL_MODE_READ_ONLY  = 1_u64
+  SQL_MODE_DEFAULT    = SQL_MODE_READ_WRITE
+
+  # SQL_AUTOCOMMIT options
+  SQL_AUTOCOMMIT_OFF     = 0
+  SQL_AUTOCOMMIT_ON      = 1
+  SQL_AUTOCOMMIT_DEFAULT = SQL_AUTOCOMMIT_ON
+
+  # SQL_LOGIN_TIMEOUT options
+  SQL_LOGIN_TIMEOUT_DEFAULT = 15_u64
+
+  # SQL_OPT_TRACE options
+  SQL_OPT_TRACE_OFF     = 0_u64
+  SQL_OPT_TRACE_ON      = 1_u64
+  SQL_OPT_TRACE_DEFAULT = SQL_OPT_TRACE_OFF
+  {% if flag?(:win32) %}
+    SQL_OPT_TRACE_FILE_DEFAULT = "\\temp\\SQL.LOG"
+  {% else %}
+    SQL_OPT_TRACE_FILE_DEFAULT = "/tmp/SQL.LOG"
+  {% end %}
+
+  # SQL_ODBC_CURSORS options
+  SQL_CUR_USE_IF_NEEDED = 0_u64
+  SQL_CUR_USE_ODBC      = 1_u64
+  SQL_CUR_USE_DRIVER    = 2_u64
+  SQL_CUR_DEFAULT       = SQL_CUR_USE_DRIVER
+
+  # values for SQL_ATTR_DISCONNECT_BEHAVIOR
+  SQL_DB_RETURN_TO_POOL = 0_u64
+  SQL_DB_DISCONNECT     = 1_u64
+  SQL_DB_DEFAULT        = SQL_DB_RETURN_TO_POOL
+
+  # values for SQL_ATTR_ENLIST_IN_DTC
+  SQL_DTC_DONE = 0_i64
+
+  # values for SQL_ATTR_CONNECTION_DEAD
+  SQL_CD_TRUE  = 1_i64 # Connection is closed/dead
+  SQL_CD_FALSE = 0_i64 # Connection is open/available
+
+  # values for SQL_ATTR_ANSI_APP
+  SQL_AA_TRUE  = 1_i64 # the application is an ANSI app
+  SQL_AA_FALSE = 0_i64 # the application is a Unicode app
+
+  # values for SQL_ATTR_RESET_CONNECTION
+  SQL_RESET_CONNECTION_YES = 1_u64
+
+  # values for SQL_ATTR_ASYNC_DBC_FUNCTIONS_ENABLE
+  SQL_ASYNC_DBC_ENABLE_ON      = 1_u64
+  SQL_ASYNC_DBC_ENABLE_OFF     = 0_u64
+  SQL_ASYNC_DBC_ENABLE_DEFAULT = SQL_ASYNC_DBC_ENABLE_OFF
+
+  # statement attributes
+  SQL_QUERY_TIMEOUT   =  0
+  SQL_MAX_ROWS        =  1
+  SQL_NOSCAN          =  2
+  SQL_MAX_LENGTH      =  3
+  SQL_ASYNC_ENABLE    =  4
+  SQL_BIND_TYPE       =  5
+  SQL_CURSOR_TYPE     =  6
+  SQL_CONCURRENCY     =  7
+  SQL_KEYSET_SIZE     =  8
+  SQL_ROWSET_SIZE     =  9
+  SQL_SIMULATE_CURSOR = 10
+  SQL_RETRIEVE_DATA   = 11
+  SQL_USE_BOOKMARKS   = 12
+  SQL_GET_BOOKMARK    = 13 # GetStmtOption Only
+  SQL_ROW_NUMBER      = 14 # GetStmtOption Only
+
+  # statement attributes for ODBC 3.0
+  SQL_ATTR_ASYNC_ENABLE          = 4
+  SQL_ATTR_CONCURRENCY           = SQL_CONCURRENCY
+  SQL_ATTR_CURSOR_TYPE           = SQL_CURSOR_TYPE
+  SQL_ATTR_ENABLE_AUTO_IPD       = 15
+  SQL_ATTR_FETCH_BOOKMARK_PTR    = 16
+  SQL_ATTR_KEYSET_SIZE           = SQL_KEYSET_SIZE
+  SQL_ATTR_MAX_LENGTH            = SQL_MAX_LENGTH
+  SQL_ATTR_MAX_ROWS              = SQL_MAX_ROWS
+  SQL_ATTR_NOSCAN                = SQL_NOSCAN
+  SQL_ATTR_PARAM_BIND_OFFSET_PTR = 17
+  SQL_ATTR_PARAM_BIND_TYPE       = 18
+  SQL_ATTR_PARAM_OPERATION_PTR   = 19
+  SQL_ATTR_PARAM_STATUS_PTR      = 20
+  SQL_ATTR_PARAMS_PROCESSED_PTR  = 21
+  SQL_ATTR_PARAMSET_SIZE         = 22
+  SQL_ATTR_QUERY_TIMEOUT         = SQL_QUERY_TIMEOUT
+  SQL_ATTR_RETRIEVE_DATA         = SQL_RETRIEVE_DATA
+  SQL_ATTR_ROW_BIND_OFFSET_PTR   = 23
+  SQL_ATTR_ROW_BIND_TYPE         = SQL_BIND_TYPE
+  SQL_ATTR_ROW_NUMBER            = SQL_ROW_NUMBER # GetStmtAttr
+  SQL_ATTR_ROW_OPERATION_PTR     = 24
+  SQL_ATTR_ROW_STATUS_PTR        = 25
+  SQL_ATTR_ROWS_FETCHED_PTR      = 26
+  SQL_ATTR_ROW_ARRAY_SIZE        = 27
+  SQL_ATTR_SIMULATE_CURSOR       = SQL_SIMULATE_CURSOR
+  SQL_ATTR_USE_BOOKMARKS         = SQL_USE_BOOKMARKS
+  SQL_ATTR_ASYNC_STMT_EVENT      = 29
+  SQL_STMT_OPT_MAX               = SQL_ROW_NUMBER
+  SQL_STMT_OPT_MIN               = SQL_QUERY_TIMEOUT
+
+  # New defines for SEARCHABLE column in SQLGetTypeInfo
+  SQL_COL_PRED_CHAR  = SQL_LIKE_ONLY
+  SQL_COL_PRED_BASIC = SQL_ALL_EXCEPT_LIKE
+
+  # whether an attribute is a pointer or not
+  SQL_IS_POINTER   = -4
+  SQL_IS_UINTEGER  = -5
+  SQL_IS_INTEGER   = -6
+  SQL_IS_USMALLINT = -7
+  SQL_IS_SMALLINT  = -8
+
+  # the value of SQL_ATTR_PARAM_BIND_TYPE
+  SQL_PARAM_BIND_BY_COLUMN    = 0_u64
+  SQL_PARAM_BIND_TYPE_DEFAULT = SQL_PARAM_BIND_BY_COLUMN
+
+  # SQL_QUERY_TIMEOUT options
+  SQL_QUERY_TIMEOUT_DEFAULT = 0_u64
+
+  # SQL_MAX_ROWS options
+  SQL_MAX_ROWS_DEFAULT = 0_u64
+
+  # SQL_NOSCAN options
+  SQL_NOSCAN_OFF     = 0_u64 # 1.0 FALSE
+  SQL_NOSCAN_ON      = 1_u64 # 1.0 TRUE
+  SQL_NOSCAN_DEFAULT = SQL_NOSCAN_OFF
+
+  # SQL_MAX_LENGTH options
+  SQL_MAX_LENGTH_DEFAULT = 0_u64
+
+  # values for SQL_ATTR_ASYNC_ENABLE
+  SQL_ASYNC_ENABLE_OFF     = 0_u64
+  SQL_ASYNC_ENABLE_ON      = 1_u64
+  SQL_ASYNC_ENABLE_DEFAULT = SQL_ASYNC_ENABLE_OFF
+
+  # SQL_BIND_TYPE options
+  SQL_BIND_BY_COLUMN    = 0_u64
+  SQL_BIND_TYPE_DEFAULT = SQL_BIND_BY_COLUMN
+
+  # SQL_CONCURRENCY options
+  SQL_CONCUR_READ_ONLY = 1
+  SQL_CONCUR_LOCK      = 2
+  SQL_CONCUR_ROWVER    = 3
+  SQL_CONCUR_VALUES    = 4
+  SQL_CONCUR_DEFAULT   = SQL_CONCUR_READ_ONLY
+
+  # SQL_CURSOR_TYPE options
+  SQL_CURSOR_FORWARD_ONLY  = 0_u64
+  SQL_CURSOR_KEYSET_DRIVEN = 1_u64
+  SQL_CURSOR_DYNAMIC       = 2_u64
+  SQL_CURSOR_STATIC        = 3_u64
+  SQL_CURSOR_TYPE_DEFAULT  = SQL_CURSOR_FORWARD_ONLY
+
+  # SQL_ROWSET_SIZE options
+  SQL_ROWSET_SIZE_DEFAULT = 1_u64
+
+  # SQL_KEYSET_SIZE options
+  SQL_KEYSET_SIZE_DEFAULT = 0_u64
+
+  # SQL_SIMULATE_CURSOR options
+  SQL_SC_NON_UNIQUE = 0_u64
+  SQL_SC_TRY_UNIQUE = 1_u64
+  SQL_SC_UNIQUE     = 2_u64
+
+  # SQL_RETRIEVE_DATA options
+  SQL_RD_OFF     = 0_u64
+  SQL_RD_ON      = 1_u64
+  SQL_RD_DEFAULT = SQL_RD_ON
+
+  # SQL_USE_BOOKMARKS options
+  SQL_UB_OFF     = 0_u64
+  SQL_UB_ON      = 1_u64
+  SQL_UB_DEFAULT = SQL_UB_OFF
+  # New values for SQL_USE_BOOKMARKS attribute
+  SQL_UB_FIXED    = SQL_UB_ON
+  SQL_UB_VARIABLE = 2_u64
+
+  # extended descriptor field
+  SQL_DESC_ARRAY_SIZE                  = 20
+  SQL_DESC_ARRAY_STATUS_PTR            = 21
+  SQL_DESC_AUTO_UNIQUE_VALUE           = SQL_COLUMN_AUTO_INCREMENT
+  SQL_DESC_BASE_COLUMN_NAME            = 22
+  SQL_DESC_BASE_TABLE_NAME             = 23
+  SQL_DESC_BIND_OFFSET_PTR             = 24
+  SQL_DESC_BIND_TYPE                   = 25
+  SQL_DESC_CASE_SENSITIVE              = SQL_COLUMN_CASE_SENSITIVE
+  SQL_DESC_CATALOG_NAME                = SQL_COLUMN_QUALIFIER_NAME
+  SQL_DESC_CONCISE_TYPE                = SQL_COLUMN_TYPE
+  SQL_DESC_DATETIME_INTERVAL_PRECISION = 26
+  SQL_DESC_DISPLAY_SIZE                = SQL_COLUMN_DISPLAY_SIZE
+  SQL_DESC_FIXED_PREC_SCALE            = SQL_COLUMN_MONEY
+  SQL_DESC_LABEL                       = SQL_COLUMN_LABEL
+  SQL_DESC_LITERAL_PREFIX              = 27
+  SQL_DESC_LITERAL_SUFFIX              = 28
+  SQL_DESC_LOCAL_TYPE_NAME             = 29
+  SQL_DESC_MAXIMUM_SCALE               = 30
+  SQL_DESC_MINIMUM_SCALE               = 31
+  SQL_DESC_NUM_PREC_RADIX              = 32
+  SQL_DESC_PARAMETER_TYPE              = 33
+  SQL_DESC_ROWS_PROCESSED_PTR          = 34
+  SQL_DESC_ROWVER                      = 35
+  SQL_DESC_SCHEMA_NAME                 = SQL_COLUMN_OWNER_NAME
+  SQL_DESC_SEARCHABLE                  = SQL_COLUMN_SEARCHABLE
+  SQL_DESC_TYPE_NAME                   = SQL_COLUMN_TYPE_NAME
+  SQL_DESC_TABLE_NAME                  = SQL_COLUMN_TABLE_NAME
+  SQL_DESC_UNSIGNED                    = SQL_COLUMN_UNSIGNED
+  SQL_DESC_UPDATABLE                   = SQL_COLUMN_UPDATABLE
+
+  # defines for diagnostics fields
+  SQL_DIAG_CURSOR_ROW_COUNT = -1249
+  SQL_DIAG_ROW_NUMBER       = -1248
+  SQL_DIAG_COLUMN_NUMBER    = -1247
+
+  # SQL extended datatypes
+  SQL_DATE          =   9
+  SQL_INTERVAL      =  10
+  SQL_TIME          =  10
+  SQL_TIMESTAMP     =  11
+  SQL_LONGVARCHAR   =  -1
+  SQL_BINARY        =  -2
+  SQL_VARBINARY     =  -3
+  SQL_LONGVARBINARY =  -4
+  SQL_BIGINT        =  -5
+  SQL_TINYINT       =  -6
+  SQL_BIT           =  -7
+  SQL_GUID          = -11
+
+  # interval code
+  SQL_CODE_YEAR             =  1
+  SQL_CODE_MONTH            =  2
+  SQL_CODE_DAY              =  3
+  SQL_CODE_HOUR             =  4
+  SQL_CODE_MINUTE           =  5
+  SQL_CODE_SECOND           =  6
+  SQL_CODE_YEAR_TO_MONTH    =  7
+  SQL_CODE_DAY_TO_HOUR      =  8
+  SQL_CODE_DAY_TO_MINUTE    =  9
+  SQL_CODE_DAY_TO_SECOND    = 10
+  SQL_CODE_HOUR_TO_MINUTE   = 11
+  SQL_CODE_HOUR_TO_SECOND   = 12
+  SQL_CODE_MINUTE_TO_SECOND = 13
+
+  SQL_INTERVAL_YEAR             = (100 + SQL_CODE_YEAR)
+  SQL_INTERVAL_MONTH            = (100 + SQL_CODE_MONTH)
+  SQL_INTERVAL_DAY              = (100 + SQL_CODE_DAY)
+  SQL_INTERVAL_HOUR             = (100 + SQL_CODE_HOUR)
+  SQL_INTERVAL_MINUTE           = (100 + SQL_CODE_MINUTE)
+  SQL_INTERVAL_SECOND           = (100 + SQL_CODE_SECOND)
+  SQL_INTERVAL_YEAR_TO_MONTH    = (100 + SQL_CODE_YEAR_TO_MONTH)
+  SQL_INTERVAL_DAY_TO_HOUR      = (100 + SQL_CODE_DAY_TO_HOUR)
+  SQL_INTERVAL_DAY_TO_MINUTE    = (100 + SQL_CODE_DAY_TO_MINUTE)
+  SQL_INTERVAL_DAY_TO_SECOND    = (100 + SQL_CODE_DAY_TO_SECOND)
+  SQL_INTERVAL_HOUR_TO_MINUTE   = (100 + SQL_CODE_HOUR_TO_MINUTE)
+  SQL_INTERVAL_HOUR_TO_SECOND   = (100 + SQL_CODE_HOUR_TO_SECOND)
+  SQL_INTERVAL_MINUTE_TO_SECOND = (100 + SQL_CODE_MINUTE_TO_SECOND)
+
+  SQL_C_DEFAULT       =  99
+  SQL_SIGNED_OFFSET   = -20
+  SQL_UNSIGNED_OFFSET = -22
+
+  # C datatype to SQL datatype mapping
+  SQL_C_DOUBLE    = SQL_DOUBLE
+  SQL_C_DATE      = SQL_DATE
+  SQL_C_TIME      = SQL_TIME
+  SQL_C_TIMESTAMP = SQL_TIMESTAMP
+
+  SQL_C_TYPE_DATE                 = SQL_TYPE_DATE
+  SQL_C_TYPE_TIME                 = SQL_TYPE_TIME
+  SQL_C_TYPE_TIMESTAMP            = SQL_TYPE_TIMESTAMP
+  SQL_C_INTERVAL_YEAR             = SQL_INTERVAL_YEAR
+  SQL_C_INTERVAL_MONTH            = SQL_INTERVAL_MONTH
+  SQL_C_INTERVAL_DAY              = SQL_INTERVAL_DAY
+  SQL_C_INTERVAL_HOUR             = SQL_INTERVAL_HOUR
+  SQL_C_INTERVAL_MINUTE           = SQL_INTERVAL_MINUTE
+  SQL_C_INTERVAL_SECOND           = SQL_INTERVAL_SECOND
+  SQL_C_INTERVAL_YEAR_TO_MONTH    = SQL_INTERVAL_YEAR_TO_MONTH
+  SQL_C_INTERVAL_DAY_TO_HOUR      = SQL_INTERVAL_DAY_TO_HOUR
+  SQL_C_INTERVAL_DAY_TO_MINUTE    = SQL_INTERVAL_DAY_TO_MINUTE
+  SQL_C_INTERVAL_DAY_TO_SECOND    = SQL_INTERVAL_DAY_TO_SECOND
+  SQL_C_INTERVAL_HOUR_TO_MINUTE   = SQL_INTERVAL_HOUR_TO_MINUTE
+  SQL_C_INTERVAL_HOUR_TO_SECOND   = SQL_INTERVAL_HOUR_TO_SECOND
+  SQL_C_INTERVAL_MINUTE_TO_SECOND = SQL_INTERVAL_MINUTE_TO_SECOND
+
+  SQL_C_BINARY = SQL_BINARY
+  SQL_C_BIT    = SQL_BIT
+
+  SQL_C_SBIGINT = (SQL_BIGINT + SQL_SIGNED_OFFSET)   # SIGNED BIGINT
+  SQL_C_UBIGINT = (SQL_BIGINT + SQL_UNSIGNED_OFFSET) # UNSIGNED BIGINT
+
+  SQL_C_TINYINT  = SQL_TINYINT
+  SQL_C_LONG     = SQL_INTEGER
+  SQL_C_SLONG    = (SQL_C_LONG + SQL_SIGNED_OFFSET)    # SIGNED INTEGER
+  SQL_C_SSHORT   = (SQL_C_SHORT + SQL_SIGNED_OFFSET)   # SIGNED SMALLINT
+  SQL_C_STINYINT = (SQL_TINYINT + SQL_SIGNED_OFFSET)   # SIGNED TINYINT
+  SQL_C_ULONG    = (SQL_C_LONG + SQL_UNSIGNED_OFFSET)  # UNSIGNED INTEGER
+  SQL_C_USHORT   = (SQL_C_SHORT + SQL_UNSIGNED_OFFSET) # UNSIGNED SMALLINT
+  SQL_C_UTINYINT = (SQL_TINYINT + SQL_UNSIGNED_OFFSET) # UNSIGNED TINYINT
+  SQL_C_BOOKMARK = SQL_C_UBIGINT                       # BOOKMARK
+  SQL_C_GUID     = SQL_GUID
+  SQL_TYPE_NULL  = 0
+
+  SQL_DRIVER_C_TYPE_BASE     = 16384
+  SQL_DRIVER_SQL_TYPE_BASE   = 16384
+  SQL_DRIVER_DESC_FIELD_BASE = 16384
+  SQL_DRIVER_DIAG_FIELD_BASE = 16384
+  SQL_DRIVER_INFO_TYPE_BASE  = 16384
+  SQL_DRIVER_CONN_ATTR_BASE  = 16384
+  SQL_DRIVER_STMT_ATTR_BASE  = 16384
+
+  SQL_C_VARBOOKMARK = SQL_C_BINARY
+
+  # define for SQL_DIAG_ROW_NUMBER and SQL_DIAG_COLUMN_NUMBER
+  SQL_NO_ROW_NUMBER         = -1
+  SQL_NO_COLUMN_NUMBER      = -1
+  SQL_ROW_NUMBER_UNKNOWN    = -2
+  SQL_COLUMN_NUMBER_UNKNOWN = -2
+
+  # SQLBindParameter extensions
+  SQL_DEFAULT_PARAM           = -5
+  SQL_IGNORE                  = -6
+  SQL_COLUMN_IGNORE           = SQL_IGNORE
+  SQL_LEN_DATA_AT_EXEC_OFFSET = -100
+
+  # binary length for driver specific attributes
+  SQL_LEN_BINARY_ATTR_OFFSET = -100
+
+  # Defines used by Driver Manager when mapping SQLSetParam to SQLBindParameter
+  SQL_PARAM_TYPE_DEFAULT = SQL_PARAM_INPUT_OUTPUT
+  SQL_SETPARAM_VALUE_MAX = -1_i64
+
+  # SQLColAttributes defines
+  SQL_COLUMN_COUNT          =  0
+  SQL_COLUMN_NAME           =  1
+  SQL_COLUMN_TYPE           =  2
+  SQL_COLUMN_LENGTH         =  3
+  SQL_COLUMN_PRECISION      =  4
+  SQL_COLUMN_SCALE          =  5
+  SQL_COLUMN_DISPLAY_SIZE   =  6
+  SQL_COLUMN_NULLABLE       =  7
+  SQL_COLUMN_UNSIGNED       =  8
+  SQL_COLUMN_MONEY          =  9
+  SQL_COLUMN_UPDATABLE      = 10
+  SQL_COLUMN_AUTO_INCREMENT = 11
+  SQL_COLUMN_CASE_SENSITIVE = 12
+  SQL_COLUMN_SEARCHABLE     = 13
+  SQL_COLUMN_TYPE_NAME      = 14
+  SQL_COLUMN_TABLE_NAME     = 15
+  SQL_COLUMN_OWNER_NAME     = 16
+  SQL_COLUMN_QUALIFIER_NAME = 17
+  SQL_COLUMN_LABEL          = 18
+  SQL_COLATT_OPT_MAX        = SQL_COLUMN_LABEL
+  SQL_COLATT_OPT_MIN        = SQL_COLUMN_COUNT
+
+  # SQLColAttributes subdefines for SQL_COLUMN_UPDATABLE
+  SQL_ATTR_READONLY          = 0
+  SQL_ATTR_WRITE             = 1
+  SQL_ATTR_READWRITE_UNKNOWN = 2
+
+  # SQLColAttributes subdefines for SQL_COLUMN_SEARCHABLE
+  # These are also used by SQLGetInfo
+  SQL_UNSEARCHABLE    = 0
+  SQL_LIKE_ONLY       = 1
+  SQL_ALL_EXCEPT_LIKE = 2
+  SQL_SEARCHABLE      = 3
+  SQL_PRED_SEARCHABLE = SQL_SEARCHABLE
+
+  # Special return values for SQLGetData
+  SQL_NO_TOTAL = -4
+
+  # SQLGetFunctions: additional values for fFunction to represent functions that
+  # are not in the X/Open spec.
+  SQL_API_SQLALLOCHANDLESTD   = 73
+  SQL_API_SQLBULKOPERATIONS   = 24
+  SQL_API_SQLBINDPARAMETER    = 72
+  SQL_API_SQLBROWSECONNECT    = 55
+  SQL_API_SQLCOLATTRIBUTES    =  6
+  SQL_API_SQLCOLUMNPRIVILEGES = 56
+  SQL_API_SQLDESCRIBEPARAM    = 58
+  SQL_API_SQLDRIVERCONNECT    = 41
+  SQL_API_SQLDRIVERS          = 71
+  SQL_API_SQLEXTENDEDFETCH    = 59
+  SQL_API_SQLFOREIGNKEYS      = 60
+  SQL_API_SQLMORERESULTS      = 61
+  SQL_API_SQLNATIVESQL        = 62
+  SQL_API_SQLNUMPARAMS        = 63
+  SQL_API_SQLPARAMOPTIONS     = 64
+  SQL_API_SQLPRIMARYKEYS      = 65
+  SQL_API_SQLPROCEDURECOLUMNS = 66
+  SQL_API_SQLPROCEDURES       = 67
+  SQL_API_SQLSETPOS           = 68
+  SQL_API_SQLSETSCROLLOPTIONS = 69
+  SQL_API_SQLTABLEPRIVILEGES  = 70
+
+  # ----------------------------------------------
+  # SQL_API_ODBC3_ALL_FUNCTIONS
+  # This returns a bitmap, which allows us to
+  # handle the higher-valued function numbers.
+  # Use  SQL_FUNC_EXISTS(bitmap,function_number)
+  # to determine if the function exists.
+  # ----------------------------------------------
+  SQL_API_ODBC3_ALL_FUNCTIONS      = 999
+  SQL_API_ODBC3_ALL_FUNCTIONS_SIZE = 250 # array of 250 words
+
+  # **********************************************
+  # Extended definitions for SQLGetInfo
+  # **********************************************
+
+  # ---------------------------------
+  # Values in ODBC 2.0 that are not
+  # in the X/Open spec
+  # ---------------------------------
+  SQL_INFO_FIRST                 =   0
+  SQL_ACTIVE_CONNECTIONS         =   0
+  SQL_ACTIVE_STATEMENTS          =   1
+  SQL_DRIVER_HDBC                =   3
+  SQL_DRIVER_HENV                =   4
+  SQL_DRIVER_HSTMT               =   5
+  SQL_DRIVER_NAME                =   6
+  SQL_DRIVER_VER                 =   7
+  SQL_ODBC_API_CONFORMANCE       =   9
+  SQL_ODBC_VER                   =  10
+  SQL_ROW_UPDATES                =  11
+  SQL_ODBC_SAG_CLI_CONFORMANCE   =  12
+  SQL_ODBC_SQL_CONFORMANCE       =  15
+  SQL_PROCEDURES                 =  21
+  SQL_CONCAT_NULL_BEHAVIOR       =  22
+  SQL_CURSOR_ROLLBACK_BEHAVIOR   =  24
+  SQL_EXPRESSIONS_IN_ORDERBY     =  27
+  SQL_MAX_OWNER_NAME_LEN         =  32
+  SQL_MAX_PROCEDURE_NAME_LEN     =  33
+  SQL_MAX_QUALIFIER_NAME_LEN     =  34
+  SQL_MULT_RESULT_SETS           =  36
+  SQL_MULTIPLE_ACTIVE_TXN        =  37
+  SQL_OUTER_JOINS                =  38
+  SQL_OWNER_TERM                 =  39
+  SQL_PROCEDURE_TERM             =  40
+  SQL_QUALIFIER_NAME_SEPARATOR   =  41
+  SQL_QUALIFIER_TERM             =  42
+  SQL_SCROLL_OPTIONS             =  44
+  SQL_TABLE_TERM                 =  45
+  SQL_CONVERT_FUNCTIONS          =  48
+  SQL_NUMERIC_FUNCTIONS          =  49
+  SQL_STRING_FUNCTIONS           =  50
+  SQL_SYSTEM_FUNCTIONS           =  51
+  SQL_TIMEDATE_FUNCTIONS         =  52
+  SQL_CONVERT_BIGINT             =  53
+  SQL_CONVERT_BINARY             =  54
+  SQL_CONVERT_BIT                =  55
+  SQL_CONVERT_CHAR               =  56
+  SQL_CONVERT_DATE               =  57
+  SQL_CONVERT_DECIMAL            =  58
+  SQL_CONVERT_DOUBLE             =  59
+  SQL_CONVERT_FLOAT              =  60
+  SQL_CONVERT_INTEGER            =  61
+  SQL_CONVERT_LONGVARCHAR        =  62
+  SQL_CONVERT_NUMERIC            =  63
+  SQL_CONVERT_REAL               =  64
+  SQL_CONVERT_SMALLINT           =  65
+  SQL_CONVERT_TIME               =  66
+  SQL_CONVERT_TIMESTAMP          =  67
+  SQL_CONVERT_TINYINT            =  68
+  SQL_CONVERT_VARBINARY          =  69
+  SQL_CONVERT_VARCHAR            =  70
+  SQL_CONVERT_LONGVARBINARY      =  71
+  SQL_CONVERT_GUID               = 173
+  SQL_ODBC_SQL_OPT_IEF           =  73
+  SQL_CORRELATION_NAME           =  74
+  SQL_NON_NULLABLE_COLUMNS       =  75
+  SQL_DRIVER_HLIB                =  76
+  SQL_DRIVER_ODBC_VER            =  77
+  SQL_LOCK_TYPES                 =  78
+  SQL_POS_OPERATIONS             =  79
+  SQL_POSITIONED_STATEMENTS      =  80
+  SQL_BOOKMARK_PERSISTENCE       =  82
+  SQL_STATIC_SENSITIVITY         =  83
+  SQL_FILE_USAGE                 =  84
+  SQL_COLUMN_ALIAS               =  87
+  SQL_GROUP_BY                   =  88
+  SQL_KEYWORDS                   =  89
+  SQL_OWNER_USAGE                =  91
+  SQL_QUALIFIER_USAGE            =  92
+  SQL_QUOTED_IDENTIFIER_CASE     =  93
+  SQL_SUBQUERIES                 =  95
+  SQL_UNION                      =  96
+  SQL_MAX_ROW_SIZE_INCLUDES_LONG = 103
+  SQL_MAX_CHAR_LITERAL_LEN       = 108
+  SQL_TIMEDATE_ADD_INTERVALS     = 109
+  SQL_TIMEDATE_DIFF_INTERVALS    = 110
+  SQL_NEED_LONG_DATA_LEN         = 111
+  SQL_MAX_BINARY_LITERAL_LEN     = 112
+  SQL_LIKE_ESCAPE_CLAUSE         = 113
+  SQL_QUALIFIER_LOCATION         = 114
+
+  # -----------------------------------------------
+  # ODBC 3.0 SQLGetInfo values that are not part
+  # of the X/Open standard at this time.   X/Open
+  # standard values are in sql.h.
+  # -----------------------------------------------
+  SQL_ACTIVE_ENVIRONMENTS             =   116
+  SQL_ALTER_DOMAIN                    =   117
+  SQL_SQL_CONFORMANCE                 =   118
+  SQL_DATETIME_LITERALS               =   119
+  SQL_ASYNC_MODE                      = 10021
+  SQL_BATCH_ROW_COUNT                 =   120
+  SQL_BATCH_SUPPORT                   =   121
+  SQL_CATALOG_LOCATION                = SQL_QUALIFIER_LOCATION
+  SQL_CATALOG_NAME_SEPARATOR          = SQL_QUALIFIER_NAME_SEPARATOR
+  SQL_CATALOG_TERM                    = SQL_QUALIFIER_TERM
+  SQL_CATALOG_USAGE                   = SQL_QUALIFIER_USAGE
+  SQL_CONVERT_WCHAR                   =   122
+  SQL_CONVERT_INTERVAL_DAY_TIME       =   123
+  SQL_CONVERT_INTERVAL_YEAR_MONTH     =   124
+  SQL_CONVERT_WLONGVARCHAR            =   125
+  SQL_CONVERT_WVARCHAR                =   126
+  SQL_CREATE_ASSERTION                =   127
+  SQL_CREATE_CHARACTER_SET            =   128
+  SQL_CREATE_COLLATION                =   129
+  SQL_CREATE_DOMAIN                   =   130
+  SQL_CREATE_SCHEMA                   =   131
+  SQL_CREATE_TABLE                    =   132
+  SQL_CREATE_TRANSLATION              =   133
+  SQL_CREATE_VIEW                     =   134
+  SQL_DRIVER_HDESC                    =   135
+  SQL_DROP_ASSERTION                  =   136
+  SQL_DROP_CHARACTER_SET              =   137
+  SQL_DROP_COLLATION                  =   138
+  SQL_DROP_DOMAIN                     =   139
+  SQL_DROP_SCHEMA                     =   140
+  SQL_DROP_TABLE                      =   141
+  SQL_DROP_TRANSLATION                =   142
+  SQL_DROP_VIEW                       =   143
+  SQL_DYNAMIC_CURSOR_ATTRIBUTES1      =   144
+  SQL_DYNAMIC_CURSOR_ATTRIBUTES2      =   145
+  SQL_FORWARD_ONLY_CURSOR_ATTRIBUTES1 =   146
+  SQL_FORWARD_ONLY_CURSOR_ATTRIBUTES2 =   147
+  SQL_INDEX_KEYWORDS                  =   148
+  SQL_INFO_SCHEMA_VIEWS               =   149
+  SQL_KEYSET_CURSOR_ATTRIBUTES1       =   150
+  SQL_KEYSET_CURSOR_ATTRIBUTES2       =   151
+  SQL_MAX_ASYNC_CONCURRENT_STATEMENTS = 10022
+  SQL_ODBC_INTERFACE_CONFORMANCE      =   152
+  SQL_PARAM_ARRAY_ROW_COUNTS          =   153
+  SQL_PARAM_ARRAY_SELECTS             =   154
+  SQL_SCHEMA_TERM                     = SQL_OWNER_TERM
+  SQL_SCHEMA_USAGE                    = SQL_OWNER_USAGE
+  SQL_SQL92_DATETIME_FUNCTIONS        = 155
+  SQL_SQL92_FOREIGN_KEY_DELETE_RULE   = 156
+  SQL_SQL92_FOREIGN_KEY_UPDATE_RULE   = 157
+  SQL_SQL92_GRANT                     = 158
+  SQL_SQL92_NUMERIC_VALUE_FUNCTIONS   = 159
+  SQL_SQL92_PREDICATES                = 160
+  SQL_SQL92_RELATIONAL_JOIN_OPERATORS = 161
+  SQL_SQL92_REVOKE                    = 162
+  SQL_SQL92_ROW_VALUE_CONSTRUCTOR     = 163
+  SQL_SQL92_STRING_FUNCTIONS          = 164
+  SQL_SQL92_VALUE_EXPRESSIONS         = 165
+  SQL_STANDARD_CLI_CONFORMANCE        = 166
+  SQL_STATIC_CURSOR_ATTRIBUTES1       = 167
+  SQL_STATIC_CURSOR_ATTRIBUTES2       = 168
+  SQL_AGGREGATE_FUNCTIONS             = 169
+  SQL_DDL_INDEX                       = 170
+  SQL_DM_VER                          = 171
+  SQL_INSERT_STATEMENT                = 172
+  SQL_UNION_STATEMENT                 = SQL_UNION
+  SQL_ASYNC_DBC_FUNCTIONS             = 10023
+  SQL_DRIVER_AWARE_POOLING_SUPPORTED  = 10024
+  SQL_ASYNC_NOTIFICATION              = 10025
+
+  # Possible values for SQL_ASYNC_NOTIFICATION
+  SQL_ASYNC_NOTIFICATION_NOT_CAPABLE = 0x00000000_i64
+  SQL_ASYNC_NOTIFICATION_CAPABLE     = 0x00000001_i64
+  SQL_DTC_TRANSITION_COST            =           1750
+
+  SQL_AT_ADD_COLUMN_SINGLE              = 0x00000020_i64
+  SQL_AT_ADD_COLUMN_DEFAULT             = 0x00000040_i64
+  SQL_AT_ADD_COLUMN_COLLATION           = 0x00000080_i64
+  SQL_AT_SET_COLUMN_DEFAULT             = 0x00000100_i64
+  SQL_AT_DROP_COLUMN_DEFAULT            = 0x00000200_i64
+  SQL_AT_DROP_COLUMN_CASCADE            = 0x00000400_i64
+  SQL_AT_DROP_COLUMN_RESTRICT           = 0x00000800_i64
+  SQL_AT_ADD_TABLE_CONSTRAINT           = 0x00001000_i64
+  SQL_AT_DROP_TABLE_CONSTRAINT_CASCADE  = 0x00002000_i64
+  SQL_AT_DROP_TABLE_CONSTRAINT_RESTRICT = 0x00004000_i64
+  SQL_AT_CONSTRAINT_NAME_DEFINITION     = 0x00008000_i64
+  SQL_AT_CONSTRAINT_INITIALLY_DEFERRED  = 0x00010000_i64
+  SQL_AT_CONSTRAINT_INITIALLY_IMMEDIATE = 0x00020000_i64
+  SQL_AT_CONSTRAINT_DEFERRABLE          = 0x00040000_i64
+  SQL_AT_CONSTRAINT_NON_DEFERRABLE      = 0x00080000_i64
+
+  # SQL_CONVERT_*  return value bitmasks
+  SQL_CVT_CHAR                = 0x00000001_i64
+  SQL_CVT_NUMERIC             = 0x00000002_i64
+  SQL_CVT_DECIMAL             = 0x00000004_i64
+  SQL_CVT_INTEGER             = 0x00000008_i64
+  SQL_CVT_SMALLINT            = 0x00000010_i64
+  SQL_CVT_FLOAT               = 0x00000020_i64
+  SQL_CVT_REAL                = 0x00000040_i64
+  SQL_CVT_DOUBLE              = 0x00000080_i64
+  SQL_CVT_VARCHAR             = 0x00000100_i64
+  SQL_CVT_LONGVARCHAR         = 0x00000200_i64
+  SQL_CVT_BINARY              = 0x00000400_i64
+  SQL_CVT_VARBINARY           = 0x00000800_i64
+  SQL_CVT_BIT                 = 0x00001000_i64
+  SQL_CVT_TINYINT             = 0x00002000_i64
+  SQL_CVT_BIGINT              = 0x00004000_i64
+  SQL_CVT_DATE                = 0x00008000_i64
+  SQL_CVT_TIME                = 0x00010000_i64
+  SQL_CVT_TIMESTAMP           = 0x00020000_i64
+  SQL_CVT_LONGVARBINARY       = 0x00040000_i64
+  SQL_CVT_INTERVAL_YEAR_MONTH = 0x00080000_i64
+  SQL_CVT_INTERVAL_DAY_TIME   = 0x00100000_i64
+  SQL_CVT_WCHAR               = 0x00200000_i64
+  SQL_CVT_WLONGVARCHAR        = 0x00400000_i64
+  SQL_CVT_WVARCHAR            = 0x00800000_i64
+  SQL_CVT_GUID                = 0x01000000_i64
+
+  # SQL_CONVERT_FUNCTIONS functions
+  SQL_FN_CVT_CONVERT = 0x00000001_i64
+  SQL_FN_CVT_CAST    = 0x00000002_i64
+
+  # SQL_ODBC_API_CONFORMANCE values
+  SQL_OAC_NONE   = 0
+  SQL_OAC_LEVEL1 = 1
+  SQL_OAC_LEVEL2 = 2
+
+  # SQL_ODBC_SAG_CLI_CONFORMANCE values
+  SQL_OSCC_NOT_COMPLIANT = 0
+  SQL_OSCC_COMPLIANT     = 1
+
+  # SQL_ODBC_SQL_CONFORMANCE values
+  SQL_OSC_MINIMUM  = 0
+  SQL_OSC_CORE     = 1
+  SQL_OSC_EXTENDED = 2
+
+  # SQL_CONCAT_NULL_BEHAVIOR values
+  SQL_CB_NULL     = 0
+  SQL_CB_NON_NULL = 1
+
+  # SQL_SCROLL_OPTIONS masks
+  SQL_SO_FORWARD_ONLY  =  1
+  SQL_SO_KEYSET_DRIVEN =  2
+  SQL_SO_DYNAMIC       =  4
+  SQL_SO_MIXED         =  8
+  SQL_SO_STATIC        = 10
+
+  # SQL_CORRELATION_NAME values
+  SQL_CN_NONE      = 0
+  SQL_CN_DIFFERENT = 1
+  SQL_CN_ANY       = 2
+
+  # SQL_NON_NULLABLE_COLUMNS values
+  SQL_NNC_NULL     = 0
+  SQL_NNC_NON_NULL = 1
+
+  # SQL_NULL_COLLATION values
+  SQL_NC_START = 2
+  SQL_NC_END   = 4
+
+  # SQL_FILE_USAGE values
+  SQL_FILE_NOT_SUPPORTED = 0
+  SQL_FILE_TABLE         = 1
+  SQL_FILE_QUALIFIER     = 2
+  SQL_FILE_CATALOG       = SQL_FILE_QUALIFIER # ODBC 3.0
+
+  # SQL_GETDATA_EXTENSIONS values
+  SQL_GD_BLOCK         =  4
+  SQL_GD_BOUND         =  8
+  SQL_GD_OUTPUT_PARAMS = 10
+
+  # SQL_POSITIONED_STATEMENTS masks
+  SQL_PS_POSITIONED_DELETE = 1
+  SQL_PS_POSITIONED_UPDATE = 2
+  SQL_PS_SELECT_FOR_UPDATE = 4
+
+  # SQL_GROUP_BY values
+  SQL_GB_NOT_SUPPORTED            = 0
+  SQL_GB_GROUP_BY_EQUALS_SELECT   = 1
+  SQL_GB_GROUP_BY_CONTAINS_SELECT = 2
+  SQL_GB_NO_RELATION              = 3
+  SQL_GB_COLLATE                  = 4
+
+  #  SQL_QUALIFIER_LOCATION values
+  SQL_QL_START = 1
+  SQL_QL_END   = 2
+
+  # Options for SQLDriverConnect
+  SQL_DRIVER_NOPROMPT          = 0
+  SQL_DRIVER_COMPLETE          = 1
+  SQL_DRIVER_PROMPT            = 2
+  SQL_DRIVER_COMPLETE_REQUIRED = 3
+
+  SQL_PARAM_TYPE_UNKNOWN = 0
+  SQL_PARAM_INPUT        = 1
+  SQL_PARAM_INPUT_OUTPUT = 2
+
+  # SQL_MAX_NUMERIC_LEN = 16
+
+  # SQL_BRC_PROCEDURES              =  1
+  # SQL_BRC_EXPLICIT                =  2
+  # SQL_BRC_ROLLED_UP               =  4
+  # SQL_PARC_BATCH                  =  1
+  # SQL_PARC_NO_BATCH               =  2
+  # SQL_PAS_BATCH                   =  1
+  # SQL_PAS_NO_BATCH                =  2
+  # SQL_PAS_NO_SELECT               =  3
+  # SQL_FETCH_FIRST_USER            = 31
+  # SQL_FETCH_FIRST_SYSTEM          = 32
+  # SQL_ENTIRE_ROWSET               =  0
+  # SQL_POSITION                    =  0
+  # SQL_REFRESH                     =  1
+  # SQL_UPDATE                      =  2
+  # SQL_DELETE                      =  3
+  # SQL_ADD                         =  4
+  # SQL_UPDATE_BY_BOOKMARK          =  5
+  # SQL_DELETE_BY_BOOKMARK          =  6
+  # SQL_FETCH_BY_BOOKMARK           =  7
+  # SQL_LOCK_NO_CHANGE              =  0
+  # SQL_LOCK_EXCLUSIVE              =  1
+  # SQL_LOCK_UNLOCK                 =  2
+  # SQL_BEST_ROWID                  =  1
+  # SQL_ROWVER                      =  2
+  # SQL_PC_NOT_PSEUDO               =  1
+  # SQL_QUICK                       =  0
+  # SQL_ENSURE                      =  1
+  # SQL_TABLE_STAT                  =  0
+
+  # SQL_FETCH_BOOKMARK              =  8
+  # SQL_ROW_SUCCESS                 =  0
+  # SQL_ROW_DELETED                 =  1
+  # SQL_ROW_UPDATED                 =  2
+  # SQL_ROW_NOROW                   =  3
+  # SQL_ROW_ADDED                   =  4
+  # SQL_ROW_ERROR                   =  5
+  # SQL_ROW_SUCCESS_WITH_INFO       =  6
+  # SQL_ROW_PROCEED                 =  0
+  # SQL_ROW_IGNORE                  =  1
+  # SQL_PARAM_SUCCESS               =  0
+  # SQL_PARAM_SUCCESS_WITH_INFO     =  6
+  # SQL_PARAM_ERROR                 =  5
+  # SQL_PARAM_UNUSED                =  7
+  # SQL_PARAM_DIAG_UNAVAILABLE      =  1
+  # SQL_PARAM_PROCEED               =  0
+  # SQL_PARAM_IGNORE                =  1
+  # SQL_CASCADE                     =  0
+  # SQL_RESTRICT                    =  1
+  # SQL_SET_NULL                    =  2
+  # SQL_NO_ACTION                   =  3
+  # SQL_SET_DEFAULT                 =  4
+  # SQL_INITIALLY_DEFERRED          =  5
+  # SQL_INITIALLY_IMMEDIATE         =  6
+  # SQL_NOT_DEFERRABLE              =  7
+  # SQL_PARAM_TYPE_UNKNOWN          =  0
+  # SQL_PARAM_INPUT                 =  1
+  # SQL_PARAM_INPUT_OUTPUT          =  2
+  # SQL_RESULT_COL                  =  3
+  # SQL_PARAM_OUTPUT                =  4
+  # SQL_RETURN_VALUE                =  5
+  # SQL_PARAM_INPUT_OUTPUT_STREAM   =  8
+  # SQL_PARAM_OUTPUT_STREAM         = 16
+  # SQL_PT_UNKNOWN                  =  0
+  # SQL_PT_PROCEDURE                =  1
+  # SQL_PT_FUNCTION                 =  2
+  # SQL_DATABASE_NAME               = 16
+  # SQL_SQLSTATE_SIZEW              = 10
+
+  # SQL_OV_ODBC3            =   3_u64
+  # SQL_OV_ODBC3_80         = 380_u64
+  # SQL_IS_YEAR             =   1_i64
+  # SQL_IS_MONTH            =   2_i64
+  # SQL_IS_DAY              =   3_i64
+  # SQL_IS_HOUR             =   4_i64
+  # SQL_IS_MINUTE           =   5_i64
+  # SQL_IS_SECOND           =   6_i64
+  # SQL_IS_YEAR_TO_MONTH    =   7_i64
+  # SQL_IS_DAY_TO_HOUR      =   8_i64
+  # SQL_IS_DAY_TO_MINUTE    =   9_i64
+  # SQL_IS_DAY_TO_SECOND    =  10_i64
+  # SQL_IS_HOUR_TO_MINUTE   =  11_i64
+  # SQL_IS_HOUR_TO_SECOND   =  12_i64
+  # SQL_IS_MINUTE_TO_SECOND =  13_i64
+end
