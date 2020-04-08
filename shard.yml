@@ -6,7 +6,7 @@ description: |
 authors:
   - Ali Naqvi <syed.alinaqvi@gmail.com>
 
-crystal: 0.33.0
+crystal: 0.34.0
 
 dependencies:
   db:
