@@ -1,12 +1,12 @@
 name: odbc
-version: 0.1.0
+version: 0.1.1
 description: |
  ODBC connector for Crystal
 
 authors:
   - Ali Naqvi <syed.alinaqvi@gmail.com>
 
-crystal: 0.34.0
+crystal: 0.35.0
 
 dependencies:
   db:
