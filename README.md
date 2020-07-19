@@ -15,7 +15,7 @@ If you want to use odbc with unixODBC make sure you are running unixODBC 2.3.7!
 
    ```yaml
    dependencies:
-     crystal-odbc:
+     odbc:
        github: naqvis/crystal-odbc
    ```
 
