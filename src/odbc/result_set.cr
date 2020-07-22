@@ -43,11 +43,18 @@ class ODBC::ResultSet < DB::ResultSet
             fval = uninitialized Float64
             check LibODBC.sql_get_data(@stmt_handle, col, LibODBC::SQL_C_DOUBLE, pointerof(fval), 0, pointerof(ind_ptr))
             ind_ptr == LibODBC::SQL_NULL_DATA ? nil : fval
-          when LibODBC::SQL_CHAR, LibODBC::SQL_VARCHAR, LibODBC::SQL_LONGVARCHAR, LibODBC::SQL_WCHAR, LibODBC::SQL_WVARCHAR, LibODBC::SQL_WLONGVARCHAR
+          when LibODBC::SQL_CHAR, LibODBC::SQL_VARCHAR, LibODBC::SQL_LONGVARCHAR
+            dummy = Bytes.new(1)
+            check LibODBC.sql_get_data(@stmt_handle, col, LibODBC::SQL_C_CHAR, dummy.to_unsafe, 0, pointerof(ind_ptr))
+            return nil if ind_ptr == LibODBC::SQL_NULL_DATA
+            slen = ind_ptr
+            sbuf = Bytes.new(slen + 1)
+            check LibODBC.sql_get_data(@stmt_handle, col, LibODBC::SQL_C_CHAR, sbuf.to_unsafe, sbuf.size, pointerof(ind_ptr))
+            String.new(sbuf[...slen])
+          when LibODBC::SQL_WCHAR, LibODBC::SQL_WVARCHAR, LibODBC::SQL_WLONGVARCHAR
             dummy = Bytes.new(1)
             check LibODBC.sql_get_data(@stmt_handle, col, LibODBC::SQL_C_WCHAR, dummy.to_unsafe, 0, pointerof(ind_ptr))
             return nil if ind_ptr == LibODBC::SQL_NULL_DATA
-
             slen = (ind_ptr / 2).to_i
             sbuf = Slice(UInt16).new(slen + 1)
             check LibODBC.sql_get_data(@stmt_handle, col, LibODBC::SQL_C_WCHAR, sbuf.to_unsafe, (slen + 1)*2, pointerof(ind_ptr))
