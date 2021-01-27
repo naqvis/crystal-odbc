@@ -19,7 +19,15 @@ jobs:
     steps:
     - name: install on linux
       if: startsWith(matrix.os,'ubuntu')
-      run: sudo apt-get install libsqlite3-dev unixodbc-dev unixodbc
+      run: |
+          sudo apt-get install libsqlite3-dev unixodbc-dev unixodbc
+          sudo echo <<EOT >> /etc/odbcinst.ini
+            [SQLite3]
+            Description=SQLite3 ODBC Driver
+            Driver=libsqlite3odbc.so
+            Setup=libsqlite3odbc.so
+            UsageCount=1
+          EOT
     - uses: actions/checkout@v2
     - name: Install Crystal
       uses: oprypin/install-crystal@v1.3.0
