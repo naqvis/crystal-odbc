@@ -13,13 +13,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
-    - name: install on linux
-      if: startsWith(matrix.os,'ubuntu')
-      run: sudo apt-get install libsqlite3-0 libsqliteodbc unixodbc-dev
     - uses: actions/checkout@v2
     - name: Install Crystal
       uses: oprypin/install-crystal@v1.3.0
