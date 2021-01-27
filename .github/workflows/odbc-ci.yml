@@ -21,7 +21,7 @@ jobs:
       if: startsWith(matrix.os,'ubuntu')
       run: |
           sudo apt-get install libsqlite3-dev unixodbc-dev unixodbc
-          sudo echo <<EOT >> /etc/odbcinst.ini
+          sudo cat <<EOT >> /etc/odbcinst.ini
             [SQLite3]
             Description=SQLite3 ODBC Driver
             Driver=libsqlite3odbc.so
