@@ -1208,7 +1208,6 @@ lib LibODBC
   SQL_PARAM_INPUT_OUTPUT = 2
 
   # SQL_MAX_NUMERIC_LEN = 16
-
   # SQL_BRC_PROCEDURES              =  1
   # SQL_BRC_EXPLICIT                =  2
   # SQL_BRC_ROLLED_UP               =  4

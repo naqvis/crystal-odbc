@@ -122,7 +122,8 @@ module ODBC
       if i == size
         0_u8
       else
-        str.unsafe_byte_at(i).to_u8
+        # str.unsafe_byte_at(i).to_u8
+        str.to_unsafe[i].to_u8
       end
     end
     slice[0, size]

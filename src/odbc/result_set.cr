@@ -137,6 +137,10 @@ class ODBC::ResultSet < DB::ResultSet
     String.from_utf16 col_name[...col_name_len]
   end
 
+  def next_column_index : Int32
+    @column_index
+  end
+
   protected def do_close
     super
     check LibODBC.sql_close_cursor(@stmt_handle)

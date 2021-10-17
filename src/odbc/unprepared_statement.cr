@@ -3,7 +3,7 @@ class ODBC::UnPreparedStatement < DB::Statement
   @con_handle : LibODBC::Sqlhandle
 
   def initialize(connection, @sql : String)
-    super(connection)
+    super
     @con_handle = connection.as(Connection).con_handle
     @stmt_handle = uninitialized LibODBC::Sqlhandle
     init
