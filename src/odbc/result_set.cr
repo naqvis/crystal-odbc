@@ -138,7 +138,7 @@ class ODBC::ResultSet < DB::ResultSet
   end
 
   def next_column_index : Int32
-    @column_index
+    @column_index - 1
   end
 
   protected def do_close

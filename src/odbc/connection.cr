@@ -1,13 +1,20 @@
 class ODBC::Connection < DB::Connection
   protected getter con_handle
 
-  def initialize(ctx : DB::ConnectionContext)
-    super
+  record Options, dsn : String do
+    def self.from_uri(uri : URI)
+      Options.new(URI.decode_www_form((uri.host || "") + uri.path))
+    end
+  end
+
+  # def initialize(ctx : DB::ConnectionContext)
+  def initialize(options : ::DB::Connection::Options, odbc_options : Options)
+    super(options)
     @env_handle = uninitialized LibODBC::Sqlhandle
     @con_handle = uninitialized LibODBC::Sqlhandle
 
     init_env
-    init_con(ctx.uri)
+    init_con(odbc_options.dsn)
   end
 
   def build_prepared_statement(query) : ODBC::Statement
@@ -81,16 +88,14 @@ class ODBC::Connection < DB::Connection
     end
   end
 
-  private def init_con(uri)
+  private def init_con(dsn)
     raise Error.new("driver has been closed") if @env_handle.nil?
-    dsn = URI.decode_www_form((uri.host || "") + uri.path)
 
     # Allocate the connection handle
     env_check LibODBC.sql_alloc_handle(LibODBC::SQL_HANDLE_DBC, @env_handle, pointerof(@con_handle))
 
     # Perform the driver connect
-    name = ODBC.to_c(dsn)
-    check LibODBC.sql_driver_connect(con_handle, nil, name.to_unsafe, name.size, nil, 0, nil, LibODBC::SQL_DRIVER_NOPROMPT)
+    check LibODBC.sql_driver_connect(con_handle, nil, dsn, dsn.bytesize, nil, 0, nil, LibODBC::SQL_DRIVER_NOPROMPT)
   end
 
   private def auto_commit(flag : Bool)
@@ -112,20 +117,5 @@ class ODBC::Connection < DB::Connection
       raise Error.from_status(err)
     end
     code
-  end
-end
-
-module ODBC
-  def self.to_c(str : String)
-    size = str.bytesize
-    slice = Bytes.new(size + 1) do |i|
-      if i == size
-        0_u8
-      else
-        # str.unsafe_byte_at(i).to_u8
-        str.to_unsafe[i].to_u8
-      end
-    end
-    slice[0, size]
   end
 end

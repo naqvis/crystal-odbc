@@ -7,7 +7,8 @@ describe Driver do
 
   it "should use database option as file to open" do
     with_db do |db|
-      db.driver.should be_a(ODBC::Driver)
+      # db.driver.should be_a(ODBC::Driver)
+      db.checkout.should be_a(ODBC::Connection)
       File.exists?(DB_FILENAME).should be_true
     end
   end

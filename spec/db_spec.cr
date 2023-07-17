@@ -4,7 +4,7 @@ require "db/spec"
 private class NotSupportedType
 end
 
-DB::DriverSpecs(DB::Any).run do
+DB::DriverSpecs(DB::Any).run do |ctx|
   before do
     File.delete(DB_FILENAME) if File.exists?(DB_FILENAME)
   end
@@ -12,7 +12,7 @@ DB::DriverSpecs(DB::Any).run do
     File.delete(DB_FILENAME) if File.exists?(DB_FILENAME)
   end
 
-  connection_string "#{DSN}#{DB_FILENAME}"
+  ctx.connection_string "#{DSN}#{DB_FILENAME}"
 
   sample_value true, "TINYINT", "1", type_safe_value: false
   sample_value false, "TINYINT", "0", type_safe_value: false
