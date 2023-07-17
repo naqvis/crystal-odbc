@@ -2,5 +2,5 @@ require "db"
 require "./odbc/**"
 
 module ODBC
-  VERSION = "0.1.6"
+  VERSION = {{ `shards version "#{__DIR__}"`.chomp.stringify }}
 end

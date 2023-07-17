@@ -39,7 +39,7 @@ class ODBC::ResultSet < DB::ResultSet
             ival = uninitialized Int64
             check LibODBC.sql_get_data(@stmt_handle, col, LibODBC::SQL_C_SBIGINT, pointerof(ival), 0, pointerof(ind_ptr))
             ind_ptr == LibODBC::SQL_NULL_DATA ? nil : ival
-          when LibODBC::SQL_REAL, LibODBC::SQL_FLOAT, LibODBC::SQL_DOUBLE
+          when LibODBC::SQL_REAL, LibODBC::SQL_FLOAT, LibODBC::SQL_DOUBLE, LibODBC::SQL_NUMERIC, LibODBC::SQL_DECIMAL
             fval = uninitialized Float64
             check LibODBC.sql_get_data(@stmt_handle, col, LibODBC::SQL_C_DOUBLE, pointerof(fval), 0, pointerof(ind_ptr))
             ind_ptr == LibODBC::SQL_NULL_DATA ? nil : fval
