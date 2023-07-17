@@ -44,9 +44,8 @@ class ODBC::UnPreparedStatement < DB::Statement
 
   private def execute(args)
     raise Error.new("#{self.class} does not support query execution with arguments") unless args.size == 0
-    query = ODBC.to_c @sql
     # Execute the statement
-    check LibODBC.sql_exec_direct(@stmt_handle, query.to_unsafe, LibODBC::SQL_NTS)
+    check LibODBC.sql_exec_direct(@stmt_handle, @sql, LibODBC::SQL_NTS)
   end
 
   private def check(code)

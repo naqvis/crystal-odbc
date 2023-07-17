@@ -38,9 +38,8 @@ class ODBC::Statement < DB::Statement
     # Allocate the statement handle
     check LibODBC.sql_alloc_handle(LibODBC::SQL_HANDLE_STMT, @con_handle, pointerof(@stmt_handle))
 
-    query = ODBC.to_c(sql)
     # Prepare the statement
-    ODBC.check LibODBC.sql_prepare(@stmt_handle, query.to_unsafe, LibODBC::SQL_NTS) do
+    ODBC.check LibODBC.sql_prepare(@stmt_handle, sql, LibODBC::SQL_NTS) do
       err = ODBC.get_errors(ErrorType::STMT, @stmt_handle)
       LibODBC.sql_free_handle(LibODBC::SQL_HANDLE_STMT, @stmt_handle)
       raise Error.from_status(err)
@@ -128,7 +127,7 @@ class ODBC::Statement < DB::Statement
   end
 
   private def bind_arg(index, value : String)
-    pvt = ODBC.to_c value
+    pvt = value.to_slice
     len = pvt.size.to_u64
 
     p = Param(Slice(UInt8)).new(pvt, len.to_i64)
