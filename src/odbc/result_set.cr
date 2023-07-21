@@ -1,3 +1,5 @@
+require "big"
+
 class ODBC::ResultSet < DB::ResultSet
   def initialize(@statement, @stmt_handle : LibODBC::Sqlhandle)
     super(@statement)
@@ -39,10 +41,25 @@ class ODBC::ResultSet < DB::ResultSet
             ival = uninitialized Int64
             check LibODBC.sql_get_data(@stmt_handle, col, LibODBC::SQL_C_SBIGINT, pointerof(ival), 0, pointerof(ind_ptr))
             ind_ptr == LibODBC::SQL_NULL_DATA ? nil : ival
-          when LibODBC::SQL_REAL, LibODBC::SQL_FLOAT, LibODBC::SQL_DOUBLE, LibODBC::SQL_NUMERIC, LibODBC::SQL_DECIMAL
+          when LibODBC::SQL_REAL, LibODBC::SQL_FLOAT, LibODBC::SQL_DOUBLE
             fval = uninitialized Float64
             check LibODBC.sql_get_data(@stmt_handle, col, LibODBC::SQL_C_DOUBLE, pointerof(fval), 0, pointerof(ind_ptr))
             ind_ptr == LibODBC::SQL_NULL_DATA ? nil : fval
+          when LibODBC::SQL_NUMERIC, LibODBC::SQL_DECIMAL
+            check LibODBC.sql_col_attribute_w(@stmt_handle, col, LibODBC::SQL_DESC_PRECISION, nil, 0, nil, out precision)
+            check LibODBC.sql_col_attribute_w(@stmt_handle, col, LibODBC::SQL_DESC_SCALE, nil, 0, nil, out scale)
+            if scale < 0
+              sbuf = Bytes.new(precision - scale + 4) #Careful with scientific notation and - sign which could take up to 4 supplementary chars
+            elsif scale > precision
+              sbuf = Bytes.new(scale + 3)
+            else
+              sbuf = Bytes.new(precision + 2)
+            end
+            check LibODBC.sql_get_data(@stmt_handle, col, LibODBC::SQL_C_CHAR, sbuf.to_unsafe, sbuf.size, pointerof(ind_ptr))
+            return nil if ind_ptr == LibODBC::SQL_NULL_DATA
+            slen = [ind_ptr, sbuf.size].min
+            str = String.new(sbuf[...slen])
+            BigDecimal.new(str)
           when LibODBC::SQL_CHAR, LibODBC::SQL_VARCHAR, LibODBC::SQL_LONGVARCHAR
             dummy = Bytes.new(1)
             check LibODBC.sql_get_data(@stmt_handle, col, LibODBC::SQL_C_CHAR, dummy.to_unsafe, 0, pointerof(ind_ptr))
