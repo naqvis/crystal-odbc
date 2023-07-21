@@ -18,13 +18,14 @@ class ODBC::ResultSet < DB::ResultSet
 
   def read
     col = @column_index
+    @column_index += 1
 
     # Get the type of the column
     check LibODBC.sql_col_attribute_w(@stmt_handle, col, LibODBC::SQL_DESC_CONCISE_TYPE, nil, 0, nil, out col_type)
 
     # Query the data from the column
     ind_ptr = 0_i64
-    val = case col_type
+    case col_type
           when LibODBC::SQL_BIT
             bit = uninitialized UInt8
             check LibODBC.sql_get_data(@stmt_handle, col, LibODBC::SQL_C_BIT, pointerof(bit), 0, pointerof(ind_ptr))
@@ -96,8 +97,6 @@ class ODBC::ResultSet < DB::ResultSet
           else
             nil
           end
-    @column_index += 1
-    val
   end
 
   def read(t : Int32.class) : Int32
