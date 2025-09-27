@@ -88,17 +88,48 @@ class ODBC::Statement < DB::Statement
   end
 
   private def bind_arg(index, value : Bool)
+    # Try binding as BIT first, fallback to TINYINT for compatibility
     bval = Bytes.new(1)
     bval[0] = value ? 1_u8 : 0_u8
     inp = 1_i64
     p = Param(Slice(UInt8)).new(bval, inp)
     @params << p
-    check LibODBC.sql_bind_parameter(@stmt_handle, index.to_i16, LibODBC::SQL_PARAM_INPUT,
+
+    ret = LibODBC.sql_bind_parameter(@stmt_handle, index.to_i16, LibODBC::SQL_PARAM_INPUT,
       LibODBC::SQL_C_BIT, LibODBC::SQL_BIT, 0, 0, p.val.to_unsafe, 1, p.pcb_value)
+
+    if !ODBC.success?(ret)
+      # Fallback to TINYINT for drivers that don't support BIT
+      ret = LibODBC.sql_bind_parameter(@stmt_handle, index.to_i16, LibODBC::SQL_PARAM_INPUT,
+        LibODBC::SQL_C_TINYINT, LibODBC::SQL_TINYINT, 0, 0, p.val.to_unsafe, 1, p.pcb_value)
+
+      if !ODBC.success?(ret)
+        # Final fallback to INTEGER
+        bind_arg(index, value ? 1_i64 : 0_i64)
+        return
+      end
+    end
+
+    check ret
   end
 
   private def bind_arg(index, value : Int32)
-    bind_arg index, value.to_i64
+    # Try binding as INTEGER first, fallback to BIGINT for compatibility
+    pvt = Slice(Int32).new(1, value)
+    inp = 4_i64
+    p = Param(Slice(Int32)).new(pvt, inp)
+    @params << p
+
+    ret = LibODBC.sql_bind_parameter(@stmt_handle, index.to_i16, LibODBC::SQL_PARAM_INPUT,
+      LibODBC::SQL_C_LONG, LibODBC::SQL_INTEGER, 4, 0, p.val.to_unsafe, 0, p.pcb_value)
+
+    if !ODBC.success?(ret)
+      # Fallback to BIGINT
+      bind_arg(index, value.to_i64)
+      return
+    end
+
+    check ret
   end
 
   private def bind_arg(index, value : Int64)
@@ -107,8 +138,22 @@ class ODBC::Statement < DB::Statement
     p = Param(Slice(Int64)).new(pvt, inp)
     @params << p
 
-    check LibODBC.sql_bind_parameter(@stmt_handle, index.to_i16, LibODBC::SQL_PARAM_INPUT,
+    ret = LibODBC.sql_bind_parameter(@stmt_handle, index.to_i16, LibODBC::SQL_PARAM_INPUT,
       LibODBC::SQL_C_SBIGINT, LibODBC::SQL_BIGINT, 8, 0, p.val.to_unsafe, 0, p.pcb_value)
+
+    if !ODBC.success?(ret)
+      # Fallback to INTEGER for drivers that don't support BIGINT properly
+      ret = LibODBC.sql_bind_parameter(@stmt_handle, index.to_i16, LibODBC::SQL_PARAM_INPUT,
+        LibODBC::SQL_C_LONG, LibODBC::SQL_INTEGER, 4, 0, p.val.to_unsafe, 0, p.pcb_value)
+
+      if !ODBC.success?(ret)
+        # Final fallback to string
+        bind_arg(index, value.to_s)
+        return
+      end
+    end
+
+    check ret
   end
 
   private def bind_arg(index, value : Float32)
@@ -141,8 +186,23 @@ class ODBC::Statement < DB::Statement
     p = Param(Slice(UInt8)).new(value, value.size.to_i64)
     @params << p
 
-    check LibODBC.sql_bind_parameter(@stmt_handle, index.to_i16, LibODBC::SQL_PARAM_INPUT,
+    ret = LibODBC.sql_bind_parameter(@stmt_handle, index.to_i16, LibODBC::SQL_PARAM_INPUT,
       LibODBC::SQL_C_BINARY, LibODBC::SQL_BINARY, p.size, 0, p.val.to_unsafe, p.size, p.pcb_value)
+
+    if !ODBC.success?(ret)
+      # Fallback to VARBINARY for drivers that don't support BINARY properly
+      ret = LibODBC.sql_bind_parameter(@stmt_handle, index.to_i16, LibODBC::SQL_PARAM_INPUT,
+        LibODBC::SQL_C_BINARY, LibODBC::SQL_VARBINARY, p.size, 0, p.val.to_unsafe, p.size, p.pcb_value)
+
+      if !ODBC.success?(ret)
+        # Final fallback to string (hex representation)
+        hex_str = value.hexstring
+        bind_arg(index, hex_str)
+        return
+      end
+    end
+
+    check ret
   end
 
   private def bind_arg(index, value : Time)
@@ -158,8 +218,17 @@ class ODBC::Statement < DB::Statement
     p = Param(LibODBC::TimeStamp).new(tsv, sizeof(LibODBC::TimeStamp).to_i64)
     @params << p
 
-    check LibODBC.sql_bind_parameter(@stmt_handle, index.to_i16, LibODBC::SQL_PARAM_INPUT,
+    ret = LibODBC.sql_bind_parameter(@stmt_handle, index.to_i16, LibODBC::SQL_PARAM_INPUT,
       LibODBC::SQL_C_TYPE_TIMESTAMP, LibODBC::SQL_TYPE_TIMESTAMP, 0, 0, p.val_ptr, p.size, p.pcb_value)
+
+    if !ODBC.success?(ret)
+      # Fallback to string representation for drivers that don't support timestamp properly
+      time_str = value.to_s("%Y-%m-%d %H:%M:%S")
+      bind_arg(index, time_str)
+      return
+    end
+
+    check ret
   end
 
   private def bind_arg(index, value)
@@ -183,7 +252,7 @@ class ODBC::Statement < DB::Statement
 end
 
 module ODBC
-  private alias ParamType = Param(Slice(UInt8)) | Param(Slice(UInt16)) | Param(Slice(Int64)) | Param(Slice(Float64)) | Param(LibODBC::TimeStamp)
+  private alias ParamType = Param(Slice(UInt8)) | Param(Slice(UInt16)) | Param(Slice(Int32)) | Param(Slice(Int64)) | Param(Slice(Float64)) | Param(LibODBC::TimeStamp)
 
   private class Param(T)
     getter val

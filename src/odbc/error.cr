@@ -3,9 +3,9 @@ module ODBC
   class Error < Exception
     def self.from_status(errors : Array(StatusRecord))
       return new("Empty errors parameter") unless errors.size > 0
-      msg = String.build do |sb|
+      msg = String.build do |str|
         errors.each do |err|
-          sb << err.to_s << "\n"
+          str << err.to_s << "\n"
         end
       end
       new(msg)
@@ -31,7 +31,7 @@ module ODBC
             when .env?  then LibODBC::SQL_HANDLE_ENV
             when .dbc?  then LibODBC::SQL_HANDLE_DBC
             when .stmt? then LibODBC::SQL_HANDLE_STMT
-            else             raise Error.new("Uknown odbc handle type")
+            else             raise Error.new("Unknown odbc handle type")
             end
 
     # Get the number of diagnostic records
@@ -68,7 +68,7 @@ module ODBC
   end
 
   # :nodoc:
-  def self.check(code, &block)
+  def self.check(code, &)
     yield unless success?(code)
   end
 
