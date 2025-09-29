@@ -4,12 +4,30 @@ Crystal ODBC driver implements [crystal-db](https://github.com/crystal-lang/crys
 
 unixODBC is an open-source ODBC-library that you can run on non-Windows platforms. It is the glue between odbc (this shard) and your SQL driver.
 
-## Version matters! ##
+## Version matters!
+
 If you want to use odbc with unixODBC make sure you are running unixODBC 2.3.7!
 
 ## Installation
 
-1. Make sure you have unixODBC and SQL Driver (ODBC Driver/Connector) installed. Look into DBMS of your choice and find their ODBC driver installation instructions for your system.
+1. Install unixODBC and your database's ODBC driver:
+
+   **Ubuntu/Debian:**
+
+   ```bash
+   sudo apt-get install unixodbc unixodbc-dev
+   # For SQLite: sudo apt-get install libsqliteodbc
+   # For MSSQL: sudo apt-get install msodbcsql17
+   # For Oracle: Download from Oracle website
+   ```
+
+   **macOS:**
+
+   ```bash
+   brew install unixodbc
+   # For SQLite: brew install sqliteodbc
+   # For MSSQL: brew tap microsoft/mssql-release && brew install msodbcsql17
+   ```
 
 2. Add the dependency to your `shard.yml`:
 
@@ -19,39 +37,60 @@ If you want to use odbc with unixODBC make sure you are running unixODBC 2.3.7!
        github: naqvis/crystal-odbc
    ```
 
-2. Run `shards install`
+3. Run `shards install`
 
 ## Usage
+
+### Basic Example
 
 ```crystal
 require "db"
 require "odbc"
 
-DB.open "odbc://DSN=dsn;UID=user;PWD=password" do |db|
+DB.open "odbc://DSN=mydb;UID=user;PWD=password" do |db|
   db.exec "create table contacts (name text, age integer)"
   db.exec "insert into contacts values (?, ?)", "John Doe", 30
 
-  args = [] of DB::Any
-  args << "Sarah"
-  args << 33
-  db.exec "insert into contacts values (?, ?)", args
+  puts db.scalar "select max(age) from contacts" # => 30
 
-  puts "max age:"
-  puts db.scalar "select max(age) from contacts" # => 33
-
-  puts "contacts:"
-  db.query "select name, age from contacts order by age desc" do |rs|
-    puts "#{rs.column_name(0)} (#{rs.column_name(1)})"
-    # => name (age)
+  db.query "select name, age from contacts" do |rs|
     rs.each do
       puts "#{rs.read(String)} (#{rs.read(Int32)})"
-      # => Sarah (33)
-      # => John Doe (30)
     end
   end
 end
 ```
-refer to [crystal-db](https://github.com/crystal-lang/crystal-db) for further usage instructions.
+
+### Connection Strings
+
+Different databases use different connection string formats:
+
+```crystal
+# Using DSN (Data Source Name)
+DB.open "odbc://DSN=mydb;UID=user;PWD=password"
+
+# SQLite (file-based)
+DB.open "odbc://Driver=SQLITE3;Database=/path/to/database.db"
+
+# SQL Server
+DB.open "odbc://Driver=ODBC Driver 17 for SQL Server;Server=localhost;Database=mydb;UID=user;PWD=password"
+
+# Oracle
+DB.open "odbc://Driver=Oracle in OraClient19Home1;DBQ=localhost:1521/XE;UID=user;PWD=password"
+```
+
+### Configuration
+
+Configure ODBC behavior using environment variables:
+
+```bash
+export ODBC_CONNECTION_TIMEOUT=30
+export ODBC_QUERY_TIMEOUT=30
+export ODBC_ENABLE_TRACING=true
+export ODBC_TRACE_FILE=/tmp/odbc.log
+```
+
+Refer to [crystal-db](https://github.com/crystal-lang/crystal-db) for more usage instructions.
 
 ## Development
 

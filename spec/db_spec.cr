@@ -82,7 +82,7 @@ DB::DriverSpecs(DB::Any).run do |ctx|
       end
     end
   end
-  
+
   it "raises on unsupported param types" do |db|
     expect_raises ODBC::Error, "ODBC::Statement does not support NotSupportedType params" do
       db.query "select ?", NotSupportedType.new
@@ -112,7 +112,7 @@ DB::DriverSpecs(DB::Any).run do |ctx|
       end
     end
   end
-  
+
   it "handles single-step pragma statements" do |db|
     db.exec %(PRAGMA synchronous = OFF)
   end

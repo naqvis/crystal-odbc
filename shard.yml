@@ -1,7 +1,9 @@
 name: odbc
-version: 0.2.1
+version: 1.0.0
 description: |
-  ODBC connector for Crystal
+  Crystal ODBC driver implementing crystal-db API. Provides cross-platform database connectivity 
+  through unixODBC for SQLite, SQL Server, Oracle, and other ODBC-compatible databases with 
+  robust type conversion and driver compatibility.
 
 authors:
   - Ali Naqvi <syed.alinaqvi@gmail.com>
@@ -11,6 +13,6 @@ crystal: ">=1.0.0"
 dependencies:
   db:
     github: crystal-lang/crystal-db
-    version: ~> 0.12.0
+    version: ~> 0.14.0
 
 license: MIT
