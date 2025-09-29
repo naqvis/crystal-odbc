@@ -125,19 +125,44 @@ class ODBC::ResultSet < DB::ResultSet
   end
 
   private def read_as_boolean(col : Int32, ind_ptr : Pointer(Int64))
+    # Try SQL_C_BIT first
     bit = uninitialized UInt8
     ret = LibODBC.sql_get_data(@stmt_handle, col, LibODBC::SQL_C_BIT, pointerof(bit), 0, ind_ptr)
 
-    # If bit type fails, try as tinyint (some drivers map boolean to tinyint)
-    if !ODBC.success?(ret)
-      tval = uninitialized UInt8
-      check LibODBC.sql_get_data(@stmt_handle, col, LibODBC::SQL_C_TINYINT, pointerof(tval), 0, ind_ptr)
+    if ODBC.success?(ret)
+      return ind_ptr.value == LibODBC::SQL_NULL_DATA ? nil : (bit == 0 ? false : true)
+    end
+
+    # Fallback to TINYINT (some drivers map boolean to tinyint)
+    tval = uninitialized UInt8
+    ret = LibODBC.sql_get_data(@stmt_handle, col, LibODBC::SQL_C_TINYINT, pointerof(tval), 0, ind_ptr)
+
+    if ODBC.success?(ret)
       return nil if ind_ptr.value == LibODBC::SQL_NULL_DATA
       return tval != 0
     end
 
-    check ret
-    ind_ptr.value == LibODBC::SQL_NULL_DATA ? nil : (bit == 0 ? false : true)
+    # Fallback to INTEGER (MSSQL BIT sometimes needs this)
+    ival = uninitialized Int32
+    ret = LibODBC.sql_get_data(@stmt_handle, col, LibODBC::SQL_C_LONG, pointerof(ival), 0, ind_ptr)
+
+    if ODBC.success?(ret)
+      return nil if ind_ptr.value == LibODBC::SQL_NULL_DATA
+      return ival != 0
+    end
+
+    # Final fallback to string parsing
+    str_val = read_as_string_fallback(col, ind_ptr)
+    return nil if str_val.nil?
+
+    case str_val.downcase
+    when "true", "1", "yes", "on"
+      true
+    when "false", "0", "no", "off"
+      false
+    else
+      str_val.to_i? != 0
+    end
   end
 
   private def read_as_integer(col : Int32, col_type : Int64, ind_ptr : Pointer(Int64))
