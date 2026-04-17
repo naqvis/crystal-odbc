@@ -15,14 +15,12 @@ class ODBC::Connection < DB::Connection
     supports_transactions : Bool,
     max_identifier_length : Int32
 
-  # def initialize(ctx : DB::ConnectionContext)
   def initialize(options : ::DB::Connection::Options, odbc_options : Options)
     super(options)
-    @env_handle = uninitialized LibODBC::Sqlhandle
     @con_handle = uninitialized LibODBC::Sqlhandle
 
-    init_env
     init_con(odbc_options.dsn)
+    apply_config
     @driver_info = detect_driver_capabilities
   end
 
@@ -84,37 +82,52 @@ class ODBC::Connection < DB::Connection
       raise Error.from_status(err)
     end
 
-    # Free the connection handle
+    # Free the connection handle (env handle is shared, not freed here)
     check LibODBC.sql_free_handle(LibODBC::SQL_HANDLE_DBC, con_handle)
 
-    ODBC.check LibODBC.sql_free_handle(LibODBC::SQL_HANDLE_ENV, @env_handle), "failed to free environment handler"
-
     @con_handle = LibODBC::Sqlhandle.null
-    @env_handle = LibODBC::Sqlhandle.null
-  end
-
-  private def init_env
-    # Allocate the environment handle for the driver
-    ODBC.check LibODBC.sql_alloc_handle(LibODBC::SQL_HANDLE_ENV, nil, pointerof(@env_handle)), "failed to allocate environment handle"
-
-    # Set the environment handle to use ODBCv3
-    val = LibODBC::SQL_OV_ODBC3_80.to_u32.unsafe_as(Pointer(Void))
-
-    ODBC.check LibODBC.sql_set_env_attr(@env_handle, LibODBC::SQL_ATTR_ODBC_VERSION, val, 0) do
-      err = ODBC.get_errors(ErrorType::ENV, @env_handle)
-      LibODBC.sql_free_handle(LibODBC::SQL_HANDLE_ENV, @env_handle)
-      raise Error.from_status(err)
-    end
   end
 
   private def init_con(dsn)
-    raise Error.new("driver has been closed") if @env_handle.nil?
+    env = ODBC.env_handle
 
-    # Allocate the connection handle
-    env_check LibODBC.sql_alloc_handle(LibODBC::SQL_HANDLE_DBC, @env_handle, pointerof(@con_handle))
+    # Allocate the connection handle from the shared environment
+    env_check LibODBC.sql_alloc_handle(LibODBC::SQL_HANDLE_DBC, env, pointerof(@con_handle))
 
     # Perform the driver connect
     check LibODBC.sql_driver_connect(con_handle, nil, dsn, dsn.bytesize, nil, 0, nil, LibODBC::SQL_DRIVER_NOPROMPT)
+  end
+
+  # Apply configuration from ODBC::Config to the connection and statement attributes
+  private def apply_config
+    config = Config.instance
+
+    # Login timeout (set before connect ideally, but also useful for reconnects)
+    set_connect_attr_uint(LibODBC::SQL_ATTR_LOGIN_TIMEOUT, config.login_timeout.total_seconds.to_u32)
+
+    # Connection timeout
+    set_connect_attr_uint(LibODBC::SQL_ATTR_CONNECTION_TIMEOUT, config.connection_timeout.total_seconds.to_u32)
+
+    # Autocommit
+    if config.auto_commit?
+      auto_commit(true)
+    else
+      auto_commit(false)
+    end
+
+    # Tracing
+    if config.enable_tracing?
+      set_connect_attr_uint(LibODBC::SQL_ATTR_TRACE, LibODBC::SQL_OPT_TRACE_ON.to_u32)
+      # Set trace file via string attribute
+      trace_file = config.trace_file
+      LibODBC.sql_set_connect_attr(con_handle, LibODBC::SQL_ATTR_TRACEFILE,
+        trace_file.to_unsafe.as(Pointer(Void)), trace_file.bytesize)
+    end
+  end
+
+  private def set_connect_attr_uint(attribute : Int32, value : UInt32)
+    LibODBC.sql_set_connect_attr(con_handle, attribute,
+      Pointer(Void).new(value.to_u64), LibODBC::SQL_IS_UINTEGER)
   end
 
   private def auto_commit(flag : Bool)
@@ -132,7 +145,7 @@ class ODBC::Connection < DB::Connection
 
   private def env_check(code)
     ODBC.check code do
-      err = ODBC.get_errors(ErrorType::ENV, @env_handle)
+      err = ODBC.get_errors(ErrorType::ENV, ODBC.env_handle)
       raise Error.from_status(err)
     end
     code

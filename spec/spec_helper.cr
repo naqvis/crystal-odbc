@@ -10,14 +10,14 @@ def with_db(&block : DB::Database ->)
   File.delete(DB_FILENAME) rescue nil
   DB.open "#{DSN}#{DB_FILENAME}", &block
 ensure
-  File.delete(DB_FILENAME)
+  File.delete(DB_FILENAME) rescue nil
 end
 
 def with_cnn(&block : DB::Connection ->)
   File.delete(DB_FILENAME) rescue nil
   DB.connect "#{DSN}#{DB_FILENAME}", &block
 ensure
-  File.delete(DB_FILENAME)
+  File.delete(DB_FILENAME) rescue nil
 end
 
 def with_db(config, &block : DB::Database ->)
@@ -25,5 +25,5 @@ def with_db(config, &block : DB::Database ->)
   File.delete(DB_FILENAME) rescue nil
   DB.open uri, &block
 ensure
-  File.delete(DB_FILENAME)
+  File.delete(DB_FILENAME) rescue nil
 end

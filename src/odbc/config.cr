@@ -1,11 +1,26 @@
 module ODBC
-  # Configuration options for ODBC connections and operations
+  # Configuration options for ODBC connections and operations.
+  #
+  # Values are applied to each new connection via `Connection#apply_config`.
+  # Can be configured programmatically or via environment variables.
+  #
+  # ```
+  # ODBC::Config.configure do |c|
+  #   c.connection_timeout = 60.seconds
+  #   c.query_timeout = 30.seconds
+  #   c.enable_tracing = true
+  # end
+  # ```
   class Config
     property connection_timeout : Time::Span = 30.seconds
     property query_timeout : Time::Span = 30.seconds
     property login_timeout : Time::Span = 15.seconds
     property? enable_tracing : Bool = false
-    property trace_file : String = "/tmp/odbc.log"
+    {% if flag?(:win32) %}
+      property trace_file : String = "C:\\temp\\odbc.log"
+    {% else %}
+      property trace_file : String = "/tmp/odbc.log"
+    {% end %}
     property default_buffer_size : Int32 = 8192
     property max_string_length : Int32 = 65536
     property? auto_commit : Bool = true
@@ -14,14 +29,20 @@ module ODBC
     @@instance : Config?
 
     def self.instance : Config
-      @@instance ||= Config.new
+      @@instance ||= from_env
     end
 
     def self.configure(&) : Nil
       yield instance
     end
 
-    # Load configuration from environment variables
+    # Reset configuration to defaults (useful for testing)
+    def self.reset! : Nil
+      @@instance = nil
+    end
+
+    # Load configuration from environment variables.
+    # Called automatically on first access of `Config.instance`.
     def self.from_env : Config
       config = Config.new
 

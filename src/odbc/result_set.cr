@@ -20,8 +20,12 @@ class ODBC::ResultSet < DB::ResultSet
     col = @column_index
     @column_index += 1
 
-    # Get the type of the column
-    check LibODBC.sql_col_attribute_w(@stmt_handle, col, LibODBC::SQL_DESC_CONCISE_TYPE, nil, 0, nil, out col_type)
+    # Get the type of the column — try wide variant, fall back to ANSI for iODBC compatibility
+    ret = LibODBC.sql_col_attribute_w(@stmt_handle, col, LibODBC::SQL_DESC_CONCISE_TYPE, nil, 0, nil, out col_type)
+    unless ODBC.success?(ret)
+      check LibODBC.sql_col_attribute(@stmt_handle, col, LibODBC::SQL_DESC_CONCISE_TYPE, nil, 0, nil, out col_type_a)
+      col_type = col_type_a
+    end
 
     # Try to read the value using the detected type, with fallbacks for driver compatibility
     read_column_value(col, col_type)
@@ -717,19 +721,42 @@ class ODBC::ResultSet < DB::ResultSet
   end
 
   def column_name(index : Int32) : String
-    # get the length of the column name
     index += 1
-    check LibODBC.sql_col_attribute_w(@stmt_handle, index.to_i16, LibODBC::SQL_DESC_NAME, nil, 0, out len, nil)
 
-    # If the name length is 0, skip getting the name (the default is empty anyway)
+    # Try wide (UTF-16) variant first
+    name = column_name_wide(index)
+    return name if name && !name.empty?
+
+    # Fall back to ANSI variant (needed for iODBC which has inconsistent wide string support)
+    column_name_ansi(index)
+  end
+
+  private def column_name_wide(index : Int32) : String?
+    ret = LibODBC.sql_col_attribute_w(@stmt_handle, index.to_i16, LibODBC::SQL_DESC_NAME, nil, 0, out len, nil)
+    return nil unless ODBC.success?(ret)
+
     col_name_len = (len / 2).to_i
     return "" if col_name_len == 0
 
-    # Get the column name
     col_name = Slice(UInt16).new(col_name_len + 1)
-    check LibODBC.sql_col_attribute_w(@stmt_handle, index.to_i16, LibODBC::SQL_DESC_NAME, col_name.to_unsafe, (col_name_len + 1)*2, nil, nil)
+    ret = LibODBC.sql_col_attribute_w(@stmt_handle, index.to_i16, LibODBC::SQL_DESC_NAME, col_name.to_unsafe, (col_name_len + 1)*2, nil, nil)
+    return nil unless ODBC.success?(ret)
 
-    String.from_utf16 col_name[...col_name_len]
+    result = String.from_utf16(col_name[...col_name_len])
+    # iODBC may return null bytes even on "success"
+    result.each_char { |c| return nil if c == '\0' }
+    result
+  rescue
+    nil
+  end
+
+  private def column_name_ansi(index : Int32) : String
+    buf = Bytes.new(256)
+    ret = LibODBC.sql_col_attribute(@stmt_handle, index.to_i16, LibODBC::SQL_DESC_NAME, buf.to_unsafe, buf.size.to_i16, out str_len, nil)
+    check ret
+
+    return "" if str_len <= 0
+    String.new(buf[...str_len])
   end
 
   def next_column_index : Int32

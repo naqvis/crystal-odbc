@@ -7,7 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  test-linux:
+    name: Linux (unixODBC)
     runs-on: ubuntu-latest
 
     steps:
@@ -33,7 +34,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y unixodbc unixodbc-dev libsqliteodbc
 
-          # Configure SQLite ODBC driver
           sudo tee /etc/odbcinst.ini > /dev/null <<EOF
           [SQLITE3]
           Description=SQLite ODBC Driver
@@ -42,7 +42,6 @@ jobs:
           Threading=2
           EOF
 
-          # Verify setup
           odbcinst -q -d
 
       - name: Install shards
@@ -54,15 +53,12 @@ jobs:
       - name: Run specs
         run: crystal spec --verbose
         env:
-          # Set environment variables for better debugging
           ODBC_ENABLE_TRACING: "false"
           ODBC_CONNECTION_TIMEOUT: "30"
 
       - name: Run specs with tracing (on failure)
         if: failure()
-        run: |
-          echo "Running specs with ODBC tracing enabled for debugging..."
-          crystal spec --verbose
+        run: crystal spec --verbose
         env:
           ODBC_ENABLE_TRACING: "true"
           ODBC_TRACE_FILE: "/tmp/odbc_trace.log"
@@ -72,6 +68,113 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: odbc-trace-logs
+          name: odbc-trace-logs-linux
+          path: /tmp/odbc_trace.log
+          if-no-files-found: ignore
+
+  test-macos-iodbc:
+    name: macOS (iODBC)
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Crystal
+        uses: crystal-lang/install-crystal@v1
+        with:
+          crystal: latest
+
+      - name: Cache shards
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/shards
+            lib
+          key: ${{ runner.os }}-iodbc-shards-${{ hashFiles('shard.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-iodbc-shards-
+
+      - name: Build iODBC from source
+        run: |
+          curl -L -o libiodbc.tar.gz https://github.com/openlink/iODBC/releases/download/v3.52.16/libiodbc-3.52.16.tar.gz
+          tar xzf libiodbc.tar.gz
+          cd libiodbc-3.52.16
+          ./configure --prefix=/usr/local --disable-gui
+          make -j$(sysctl -n hw.ncpu)
+          sudo make install
+
+          echo "iODBC installed:"
+          ls /usr/local/lib/libiodbc*
+          pkg-config --libs libiodbc
+
+      - name: Build SQLite ODBC driver against iODBC
+        run: |
+          curl -L -o sqliteodbc.tar.gz https://ch-werner.hier-im-netz.de/sqliteodbc/sqliteodbc-0.99991.tar.gz
+          tar xzf sqliteodbc.tar.gz
+          cd sqliteodbc-0.99991
+
+          # Update config.sub/config.guess for ARM macOS
+          brew install automake
+          cp $(brew --prefix)/share/automake-*/config.sub .
+          cp $(brew --prefix)/share/automake-*/config.guess .
+
+          SDK_PATH=$(xcrun --show-sdk-path)
+          ./configure \
+            --prefix=/usr/local \
+            --with-odbc=/usr/local \
+            --with-sqlite3=${SDK_PATH}/usr \
+            CFLAGS="-isysroot ${SDK_PATH}" \
+            LDFLAGS="-L${SDK_PATH}/usr/lib"
+          make -j$(sysctl -n hw.ncpu)
+          sudo make install
+
+          echo "SQLite ODBC driver installed:"
+          ls /usr/local/lib/libsqlite3odbc*
+
+      - name: Register SQLite ODBC driver
+        run: |
+          mkdir -p ~/Library/ODBC
+          cat > ~/Library/ODBC/odbcinst.ini <<EOF
+          [ODBC Drivers]
+          SQLITE3 = Installed
+
+          [SQLITE3]
+          Driver = /usr/local/lib/libsqlite3odbc.dylib
+          Setup  = /usr/local/lib/libsqlite3odbc.dylib
+          EOF
+
+          cat ~/Library/ODBC/odbcinst.ini
+
+      - name: Verify no unixODBC present
+        run: |
+          if pkg-config --libs odbc 2>/dev/null; then
+            echo "WARNING: unixODBC detected, this job should test iODBC only"
+            exit 1
+          fi
+          echo "Confirmed: no unixODBC, using iODBC"
+          pkg-config --libs libiodbc
+
+      - name: Install shards
+        run: shards install
+
+      - name: Run specs
+        run: crystal spec --verbose
+        env:
+          ODBC_ENABLE_TRACING: "false"
+          ODBC_CONNECTION_TIMEOUT: "30"
+
+      - name: Run specs with tracing (on failure)
+        if: failure()
+        run: crystal spec --verbose
+        env:
+          ODBC_ENABLE_TRACING: "true"
+          ODBC_TRACE_FILE: "/tmp/odbc_trace.log"
+          ODBC_CONNECTION_TIMEOUT: "30"
+
+      - name: Upload trace logs (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: odbc-trace-logs-macos-iodbc
           path: /tmp/odbc_trace.log
           if-no-files-found: ignore

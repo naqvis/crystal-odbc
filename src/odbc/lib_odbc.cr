@@ -1,4 +1,12 @@
-@[Link(ldflags: "`command -v pkg-config > /dev/null && pkg-config --libs odbc 2> /dev/null|| printf %s '--lodbc'`")]
+{% if flag?(:win32) %}
+  @[Link("odbc32")]
+{% elsif flag?(:darwin) %}
+  # macOS: try unixODBC first (Homebrew), then iODBC (ships with macOS SDK)
+  @[Link(ldflags: "`pkg-config --libs odbc 2>/dev/null || pkg-config --libs libiodbc 2>/dev/null || printf %s '-liodbc -liodbcinst'`")]
+{% else %}
+  # Linux/FreeBSD: unixODBC via pkg-config, fallback to direct link
+  @[Link(ldflags: "`pkg-config --libs odbc 2>/dev/null || printf %s '-lodbc'`")]
+{% end %}
 lib LibODBC
   alias Sqlhandle = Void*
   alias Sqlhenv = Sqlhandle
@@ -8,15 +16,37 @@ lib LibODBC
   alias Sqlhstmt = Sqlhandle
   alias Sqlusmallint = LibC::UShort
   alias Sqlpointer = Void*
-  alias Sqllen = LibC::Long
-  alias Sqlulen = LibC::ULong
+
+  # SQLLEN/SQLULEN are pointer-sized on all platforms per ODBC 3.8 spec.
+  # On Windows LLP64: Long is 32-bit, so we must use Int64/UInt64 explicitly.
+  # On Unix LP64: LibC::Long is already 64-bit, but we use Int64/UInt64 for consistency.
+  {% if flag?(:win32) %}
+    alias Sqllen = Int64
+    alias Sqlulen = UInt64
+  {% elsif flag?(:bits64) %}
+    alias Sqllen = Int64
+    alias Sqlulen = UInt64
+  {% else %}
+    alias Sqllen = Int32
+    alias Sqlulen = UInt32
+  {% end %}
+
   alias Sqlchar = UInt8
   alias Sqlhdesc = Sqlhandle
   alias Sqlinteger = LibC::Int
   alias Sqlhwnd = Void*
   alias Sqluinteger = LibC::UInt
-  alias Sqlsetposirow = LibC::ULong
-  alias Wchar = LibC::UShort
+
+  {% if flag?(:win32) %}
+    alias Sqlsetposirow = UInt64
+  {% elsif flag?(:bits64) %}
+    alias Sqlsetposirow = UInt64
+  {% else %}
+    alias Sqlsetposirow = UInt32
+  {% end %}
+
+  # ODBC always uses UInt16 for wide chars regardless of platform wchar_t size
+  alias Wchar = UInt16
   alias Sqlwchar = Wchar
 
   struct Date

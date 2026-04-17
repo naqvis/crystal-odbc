@@ -1,43 +1,87 @@
 # crystal-odbc
 
-Crystal ODBC driver implements [crystal-db](https://github.com/crystal-lang/crystal-db) API and is a wrapper around [unixODBC](http://www.unixodbc.org).
+Crystal ODBC driver implementing the [crystal-db](https://github.com/crystal-lang/crystal-db) API. Provides cross-platform database connectivity through any ODBC Driver Manager for SQLite, SQL Server, Oracle, PostgreSQL, and other ODBC-compatible databases.
 
-unixODBC is an open-source ODBC-library that you can run on non-Windows platforms. It is the glue between odbc (this shard) and your SQL driver.
+## Supported Platforms
 
-## Version matters!
+| Platform    | ODBC Driver Manager | Install Required?                                        |
+| ----------- | ------------------- | -------------------------------------------------------- |
+| **Windows** | ODBC32 (built-in)   | No — ships with Windows                                  |
+| **macOS**   | unixODBC or iODBC   | Yes — `brew install unixodbc` or build iODBC from source |
+| **Linux**   | unixODBC            | Yes — see below                                          |
+| **FreeBSD** | unixODBC            | Yes — `pkg install unixODBC`                             |
 
-If you want to use odbc with unixODBC make sure you are running unixODBC 2.3.7!
+The library auto-detects the available ODBC Driver Manager at compile time:
+
+- On **Windows**: links against `odbc32.dll` directly (no extra dependencies)
+- On **macOS**: uses `pkg-config` to find unixODBC; falls back to iODBC (`libiodbc`) if not found
+- On **Linux/Unix**: uses `pkg-config` to find unixODBC; falls back to `-lodbc`
+
+> **Note on macOS and iODBC**: macOS includes iODBC runtime link stubs but _not_ the development headers. To use iODBC, you need to build it from source ([github.com/openlink/iODBC](https://github.com/openlink/iODBC)). For most users, `brew install unixodbc` is the simpler path.
 
 ## Installation
 
-1. Install unixODBC and your database's ODBC driver:
+### 1. Install an ODBC Driver Manager (if needed)
 
-   **Ubuntu/Debian:**
+**Ubuntu/Debian:**
 
-   ```bash
-   sudo apt-get install unixodbc unixodbc-dev
-   # For SQLite: sudo apt-get install libsqliteodbc
-   # For MSSQL: sudo apt-get install msodbcsql17
-   # For Oracle: Download from Oracle website
-   ```
+```bash
+sudo apt-get install unixodbc unixodbc-dev
+```
 
-   **macOS:**
+**RHEL/Fedora/CentOS:**
 
-   ```bash
-   brew install unixodbc
-   # For SQLite: brew install sqliteodbc
-   # For MSSQL: brew tap microsoft/mssql-release && brew install msodbcsql17
-   ```
+```bash
+sudo dnf install unixODBC unixODBC-devel
+```
 
-2. Add the dependency to your `shard.yml`:
+**macOS:**
 
-   ```yaml
-   dependencies:
-     odbc:
-       github: naqvis/crystal-odbc
-   ```
+```bash
+brew install unixodbc
+```
 
-3. Run `shards install`
+To use iODBC instead (no Homebrew dependency), build from source:
+
+```bash
+curl -L -o libiodbc.tar.gz https://github.com/openlink/iODBC/releases/download/v3.52.16/libiodbc-3.52.16.tar.gz
+tar xzf libiodbc.tar.gz
+cd libiodbc-3.52.16
+./configure --prefix=/usr/local --disable-gui
+make && sudo make install
+```
+
+**Windows:**
+
+No installation needed. ODBC32 is built into Windows.
+
+### 2. Install a database ODBC driver
+
+```bash
+# SQLite
+sudo apt-get install libsqliteodbc          # Debian/Ubuntu
+brew install sqliteodbc                       # macOS
+
+# SQL Server
+sudo apt-get install msodbcsql17             # Debian/Ubuntu
+brew tap microsoft/mssql-release && brew install msodbcsql17  # macOS
+
+# PostgreSQL
+sudo apt-get install odbc-postgresql         # Debian/Ubuntu
+brew install psqlodbc                         # macOS
+```
+
+### 3. Add the shard dependency
+
+```yaml
+dependencies:
+  odbc:
+    github: naqvis/crystal-odbc
+```
+
+```bash
+shards install
+```
 
 ## Usage
 
@@ -77,26 +121,50 @@ DB.open "odbc://Driver=ODBC Driver 17 for SQL Server;Server=localhost;Database=m
 
 # Oracle
 DB.open "odbc://Driver=Oracle in OraClient19Home1;DBQ=localhost:1521/XE;UID=user;PWD=password"
+
+# PostgreSQL
+DB.open "odbc://Driver=PostgreSQL Unicode;Server=localhost;Database=mydb;UID=user;PWD=password"
 ```
 
 ### Configuration
 
-Configure ODBC behavior using environment variables:
+Configure ODBC behavior programmatically:
 
-```bash
-export ODBC_CONNECTION_TIMEOUT=30
-export ODBC_QUERY_TIMEOUT=30
-export ODBC_ENABLE_TRACING=true
-export ODBC_TRACE_FILE=/tmp/odbc.log
+```crystal
+ODBC::Config.configure do |c|
+  c.connection_timeout = 60.seconds
+  c.query_timeout = 30.seconds
+  c.login_timeout = 15.seconds
+  c.auto_commit = true
+  c.enable_tracing = false
+  c.trace_file = "/tmp/odbc.log"
+  c.default_buffer_size = 8192
+  c.max_string_length = 65536
+end
 ```
 
-Refer to [crystal-db](https://github.com/crystal-lang/crystal-db) for more usage instructions.
+Or via environment variables:
+
+```bash
+export ODBC_CONNECTION_TIMEOUT=60
+export ODBC_QUERY_TIMEOUT=30
+export ODBC_LOGIN_TIMEOUT=15
+export ODBC_AUTO_COMMIT=true
+export ODBC_ENABLE_TRACING=true
+export ODBC_TRACE_FILE=/tmp/odbc.log
+export ODBC_BUFFER_SIZE=8192
+export ODBC_MAX_STRING_LENGTH=65536
+```
+
+Configuration values are applied to each new connection automatically.
+
+Refer to [crystal-db](https://github.com/crystal-lang/crystal-db) for the full API.
 
 ## Development
 
-To run all tests:
+To run all tests (requires SQLite ODBC driver):
 
-```
+```bash
 crystal spec
 ```
 

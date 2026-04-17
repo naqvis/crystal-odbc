@@ -19,7 +19,10 @@ class ODBC::UnPreparedStatement < DB::Statement
     execute(args)
 
     # Get the number of rows affected
-    check LibODBC.sql_row_count(@stmt_handle, out rows_affected)
+    # sql_row_count may fail after SQL_NO_DATA (e.g., DELETE matching zero rows),
+    # in which case rows_affected is 0
+    ret = LibODBC.sql_row_count(@stmt_handle, out rows_affected)
+    rows_affected = 0_i64 unless ODBC.success?(ret)
 
     # unprepared statements are not closed by framework, so let's close this statement by ourselves
     do_close
@@ -40,6 +43,13 @@ class ODBC::UnPreparedStatement < DB::Statement
   private def init
     # Allocate the statement handle
     check LibODBC.sql_alloc_handle(LibODBC::SQL_HANDLE_STMT, @con_handle, pointerof(@stmt_handle))
+
+    # Apply query timeout from config
+    timeout = Config.instance.query_timeout.total_seconds.to_u32
+    if timeout > 0
+      LibODBC.sql_set_stmt_attr(@stmt_handle, LibODBC::SQL_ATTR_QUERY_TIMEOUT,
+        Pointer(Void).new(timeout.to_u64), LibODBC::SQL_IS_UINTEGER)
+    end
   end
 
   private def execute(args)
