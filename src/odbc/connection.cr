@@ -32,11 +32,31 @@ class ODBC::Connection < DB::Connection
     UnPreparedStatement.new(self, query)
   end
 
+  # :inherit:
+  def driver_name : String
+    "odbc"
+  end
+
+  # :inherit:
+  #
+  # This is the DBMS behind the ODBC driver (e.g. `"PostgreSQL"`, `"Microsoft SQL Server"`).
+  def server_name : String?
+    get_info_string(LibODBC::SQL_DBMS_NAME)
+  end
+
+  # :inherit:
+  #
+  # This is the version of the DBMS behind the ODBC driver, in the format the ODBC driver renders it
+  # (e.g. `"13.00.000002"` for MariaDB 13.0.2).
+  def server_version : String?
+    get_info_string(LibODBC::SQL_DBMS_VER)
+  end
+
   # :nodoc:
   def perform_begin_transaction
     # Check for transaction support using cached driver info
     unless supports_transactions?
-      raise Error.new("transactions are not supported by this ODBC driver (#{driver_name})")
+      raise Error.new("transactions are not supported by this ODBC driver (#{odbc_driver_name})")
     end
 
     # Turn autocommit off
@@ -198,7 +218,8 @@ class ODBC::Connection < DB::Connection
     @driver_info.try(&.supports_transactions) || false
   end
 
-  def driver_name : String
+  # Returns the name of the ODBC driver library (e.g. `"libsqlite3odbc.so"`).
+  def odbc_driver_name : String
     @driver_info.try(&.name) || "Unknown"
   end
 
