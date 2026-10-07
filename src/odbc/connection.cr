@@ -32,11 +32,31 @@ class ODBC::Connection < DB::Connection
     UnPreparedStatement.new(self, query)
   end
 
+  # :inherit:
+  def driver_name : String
+    "odbc"
+  end
+
+  # :inherit:
+  #
+  # This is the DBMS behind the ODBC driver (e.g. `"PostgreSQL"`, `"Microsoft SQL Server"`).
+  def server_name : String?
+    get_info_string(LibODBC::SQL_DBMS_NAME)
+  end
+
+  # :inherit:
+  #
+  # This is the version of the DBMS behind the ODBC driver, in the format the ODBC driver renders it
+  # (e.g. `"13.00.000002"` for MariaDB 13.0.2).
+  def server_version : String?
+    get_info_string(LibODBC::SQL_DBMS_VER)
+  end
+
   # :nodoc:
   def perform_begin_transaction
     # Check for transaction support using cached driver info
     unless supports_transactions?
-      raise Error.new("transactions are not supported by this ODBC driver (#{driver_name})")
+      raise Error.new("transactions are not supported by this ODBC driver (#{odbc_driver_name})")
     end
 
     # Turn autocommit off
@@ -173,13 +193,31 @@ class ODBC::Connection < DB::Connection
     )
   end
 
+  # Try wide (UTF-16) variant first
+  # Fall back to ANSI variant (needed for iODBC which has inconsistent wide string support)
   private def get_info_string(info_type : Int32) : String?
+    get_info_string_wide(info_type) || get_info_string_ansi(info_type)
+  end
+
+  private def get_info_string_wide(info_type : Int32) : String?
     buffer = Slice(UInt16).new(256)
     ret = LibODBC.sql_get_info_w(con_handle, info_type, buffer.to_unsafe, buffer.size * 2, out actual_len)
     return nil unless ODBC.success?(ret)
 
     str_len = (actual_len / 2).to_i
-    String.from_utf16(buffer[...str_len])
+    result = String.from_utf16(buffer[...str_len])
+    # UTF-32 read as UTF-16 has a null code unit after every BMP character
+    result unless result.includes?('\0')
+  rescue
+    nil
+  end
+
+  private def get_info_string_ansi(info_type : Int32) : String?
+    buffer = Bytes.new(256)
+    ret = LibODBC.sql_get_info(con_handle, info_type, buffer.to_unsafe, buffer.size, out actual_len)
+    return nil unless ODBC.success?(ret)
+
+    String.new(buffer[0, actual_len])
   rescue
     nil
   end
@@ -198,7 +236,8 @@ class ODBC::Connection < DB::Connection
     @driver_info.try(&.supports_transactions) || false
   end
 
-  def driver_name : String
+  # Returns the name of the ODBC driver library (e.g. `"libsqlite3odbc.so"`).
+  def odbc_driver_name : String
     @driver_info.try(&.name) || "Unknown"
   end
 

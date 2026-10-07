@@ -100,7 +100,7 @@ describe "ODBC connection" do
   it "detects driver capabilities" do
     with_cnn do |cnn|
       odbc_cnn = cnn.as(ODBC::Connection)
-      odbc_cnn.driver_name.should_not eq("Unknown")
+      odbc_cnn.odbc_driver_name.should_not eq("Unknown")
       odbc_cnn.max_identifier_length.should be > 0
     end
   end

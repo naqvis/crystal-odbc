@@ -11,4 +11,22 @@ describe Connection do
       cnn.scalar("select count(*) from person").should eq(1)
     end
   end
+
+  it "reports the driver name" do
+    with_cnn do |cnn|
+      cnn.driver_name.should eq("odbc")
+    end
+  end
+
+  it "reports the name of the DBMS behind the ODBC driver" do
+    with_cnn do |cnn|
+      cnn.server_name.should eq("SQLite")
+    end
+  end
+
+  it "reports the version of the DBMS behind the ODBC driver" do
+    with_cnn do |cnn|
+      cnn.server_version.should eq(cnn.scalar("select sqlite_version()"))
+    end
+  end
 end
