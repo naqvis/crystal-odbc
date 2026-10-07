@@ -193,13 +193,31 @@ class ODBC::Connection < DB::Connection
     )
   end
 
+  # Try wide (UTF-16) variant first
+  # Fall back to ANSI variant (needed for iODBC which has inconsistent wide string support)
   private def get_info_string(info_type : Int32) : String?
+    get_info_string_wide(info_type) || get_info_string_ansi(info_type)
+  end
+
+  private def get_info_string_wide(info_type : Int32) : String?
     buffer = Slice(UInt16).new(256)
     ret = LibODBC.sql_get_info_w(con_handle, info_type, buffer.to_unsafe, buffer.size * 2, out actual_len)
     return nil unless ODBC.success?(ret)
 
     str_len = (actual_len / 2).to_i
-    String.from_utf16(buffer[...str_len])
+    result = String.from_utf16(buffer[...str_len])
+    # UTF-32 read as UTF-16 has a null code unit after every BMP character
+    result unless result.includes?('\0')
+  rescue
+    nil
+  end
+
+  private def get_info_string_ansi(info_type : Int32) : String?
+    buffer = Bytes.new(256)
+    ret = LibODBC.sql_get_info(con_handle, info_type, buffer.to_unsafe, buffer.size, out actual_len)
+    return nil unless ODBC.success?(ret)
+
+    String.new(buffer[0, actual_len])
   rescue
     nil
   end
